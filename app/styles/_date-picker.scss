@@ -1,3 +1,5 @@
+@import 'variables';
+
 .no-touch {
     .date-picker a:hover {
         opacity: 0.8;
@@ -12,7 +14,7 @@
 
     list-style-type: none;
     margin: 0;
-    padding: 5px 0 0 0;
+    padding: 8px 0 0 0;
     width: 100%;
     display: block;
     z-index: 2;
@@ -42,8 +44,8 @@
 
     .day {
         color: #fff;
-        background: #265778;
-        border: 1px solid darken(#265778, 10%);
+        background: $activeColor;
+        border: 1px solid darken($activeColor, 10%);
         display: block;
         text-transform: uppercase;
         padding: 3px;

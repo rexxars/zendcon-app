@@ -1,0 +1,169 @@
+@import 'variables';
+
+.schedule {
+
+    .date-view {
+        color: $activeColor;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 0.9em;
+        padding: 0 10px;
+        margin: 5px 0;
+    }
+
+    .timespan {
+        margin: 0;
+        padding: 5px 10px;
+
+        font-size: 0.8em;
+        background: $activeColor;
+        color: #dbdbdb;
+
+        border: 1px solid darken($activeColor, 10%);
+        border-left: 0;
+        border-right: 0;
+    }
+
+    table {
+        width: 100%;
+        padding: 0;
+
+        td {
+            height: 40px;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        tr {
+            border-bottom: 1px solid #ddd;
+        }
+    }
+
+    .article {
+        padding: 5px;
+        font-size: 0.9em;
+        vertical-align: top;
+        position: relative;
+        cursor: pointer;
+
+        img.speaker {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            float: left;
+            margin: 0 5px 5px 5px;
+        }
+
+        .speaker {
+            color: #7a7b7c;
+            font-size: 0.9em;
+        }
+
+        .title {
+            display: block;
+            font-weight: bold;
+        }
+
+        .meta {
+            font-size: 0.8em;
+            color: lighten(#000, 15%);
+            width: 100%;
+        }
+
+        .location {
+            display: inline-block;
+            float: right;
+            width: 70px;
+            margin: 0 10px;
+        }
+
+        .markers {
+            position: relative;
+            top: 4px;
+
+            img {
+                width: 28px;
+            }
+        }
+    }
+
+    .abstract {
+        display: none;
+
+        text-align: justify;
+        padding: 10px;
+        margin: 5px;
+        background: darken(#fff, 15%);
+
+        &.open {
+            display: block;
+        }
+    }
+
+    .singlesession {
+        background: darken(#fff, 20%);
+    }
+
+    .keynote {
+        border-bottom: 0px;
+
+        td {
+            background: lighten($activeColor, 10%);
+            color: #fff;
+        }
+
+        .attending {
+            border-left-color: $activeColor;
+        }
+
+        .meta {
+            color: #fff;
+        }
+    }
+
+    .keynote, .singlesession {
+        .title {
+            line-height: 53px;
+        }
+
+        .meta {
+            position: absolute;
+            left: 0;
+            bottom: 3px;
+        }
+    }
+
+    .attending {
+        text-align: center;
+        background: #e6e6e6;
+        border-left: 2px solid #ddd;
+        margin-right: -2px;
+        padding: 0 10px;
+        width: 35px;
+
+        button {
+            width: 40px;
+            height: 40px;
+            border: 0;
+            background: transparent url(../images/check.png);
+
+            &.checked {
+                background-position: 0 -100px;
+            }
+
+            @media
+                only screen and (-webkit-min-device-pixel-ratio: 1.5),
+                only screen and (-o-min-device-pixel-ratio: 3/2),
+                only screen and (min-device-pixel-ratio: 1.5) {
+                background: transparent url(../images/check@2x.png);
+                background-size: 40px 140px;
+
+                &.checked {
+                    background-position: 0 -100px;
+                }
+            }
+        }
+    }
+}

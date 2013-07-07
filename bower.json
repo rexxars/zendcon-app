@@ -7,8 +7,9 @@
     "modernizr": "~2.6.2",
     "jquery": "~1.9.1",
     "font-awesome": "~3.2.1",
-    "angular": "1.1.5",
-    "speakingurl": "~0.2.20"
+    "speakingurl": "~0.2.20",
+    "moment": "~2.0.0",
+    "angular": "~1.0.7"
   },
   "devDependencies": {}
 }

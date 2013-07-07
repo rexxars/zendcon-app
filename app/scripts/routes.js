@@ -1,8 +1,10 @@
-/* global define */
-define(['angular', 'app'], function(angular, app) {
+/* global angular */
+(function() {
     'use strict';
 
-    return app.config(['$routeProvider', function($routeProvider) {
+    var app = angular.module('zc');
+
+    app.config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/speakers', {
             templateUrl: 'views/speakers.html',
             controller: 'SpeakerCtrl'
@@ -25,4 +27,5 @@ define(['angular', 'app'], function(angular, app) {
 
         $routeProvider.otherwise({redirectTo: '/speakers'});
     }]);
-});
+
+})();

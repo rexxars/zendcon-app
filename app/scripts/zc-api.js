@@ -1,9 +1,8 @@
-/*global define, ZC, navigator, localStorage */
-define([
-    'underscore',
-    'speakingurl'
-], function(_, slugGenerator) {
+/*global ZC, navigator, localStorage, getSlug, _, moment */
+(function(slugGenerator) {
     'use strict';
+
+    var ttl = 120; // Minutes
 
     var getSlug = function(input) {
         if (input === 'undefined-undefined') {
@@ -18,30 +17,34 @@ define([
     };
 
     var mapTags = function(session) {
-        var tags = [], level = (session.TechnologyLevel || '').toLowerCase();
-        if (level.length && level.indexOf('intermediate') === -1) {
-            tags.push(session.TechnologyLevel.toLowerCase());
+        var tags     = []
+          , level    = (session.TechnologyLevel || '').toLowerCase()
+          , title    = (session.SessionTitle || '').toLowerCase()
+          , abstract = (session.SessionAbstract || '').toLowerCase()
+          , track    = (session.Track || '').toLowerCase();
+
+
+        if (level.length && !_.contains(level, 'intermediate')) {
+            tags.push(level);
         }
 
-        var title = (session.SessionTitle || '').toLowerCase();
-        if (title.indexOf('ibm') >= 0) {
+        if (_.contains(title, 'ibm')) {
             tags.push('ibmi');
         }
 
-        if (title.indexOf('zend framework') + title.indexOf('zf2') >= 0) {
+        if (_.contains(title + abstract, 'zend framework') || _.contains(title + abstract, 'zf2')) {
             tags.push('zf2');
         }
 
-        var track = (session.Track || '').toLowerCase();
-        if (track.indexOf('professional php') >= 0) {
+        if (_.contains(track, 'professional php')) {
             tags.push('pro-php');
         }
 
-        if (track.indexOf('mobile') >= 0) {
+        if (_.contains(track, 'mobile')) {
             tags.push('mobile');
         }
 
-        if (track.indexOf('cloud') >= 0) {
+        if (_.contains(track, 'cloud')) {
             tags.push('cloud');
         }
 
@@ -53,7 +56,9 @@ define([
         baseUrl: ZC.apiUrl,
 
         getSpeakers: function(onSuccess, onError) {
-            return this.retrieve('/speakers', onSuccess, onError);
+            this.getSchedule(function(res) {
+                onSuccess(_.groupBy(res, 'speakerSlug'));
+            }, onError);
         },
 
         getSchedule: function(onSuccess, onError) {
@@ -61,11 +66,6 @@ define([
         },
 
         filters: {
-            '/speakers': function(entry) {
-                entry.slug = getSlug(entry.FirstName + '-' + entry.LastName);
-                return entry;
-            },
-
             '/schedule': function(entry) {
                 // Sorry about this, but I believe these have been tagged incorrectly
                 entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Ramsey' ? 'Ben'   : entry.FirstName;
@@ -73,9 +73,11 @@ define([
 
                 entry.Room        = entry.Room || 'Grand Ballroom?';
                 entry.Room        = isNaN(entry.Room) ? entry.Room : 'Room ' + entry.Room;
-                entry.EndTime     = entry.EndTime.substr(0, 5);
-                entry.StartTime   = entry.StartTime.substr(0, 5);
 
+                var start = moment(new Date(entry.Date + ' ' + entry.StartTime))
+                  , end   = moment(new Date(entry.Date + ' ' + entry.EndTime));
+
+                entry.slot        = start.format('LT') + ' - ' + end.format('LT');
                 entry.slug        = getSlug(entry.SessionTitle + '-' + entry.id);
                 entry.speakerSlug = getSlug(entry.FirstName + '-' + entry.LastName);
                 entry.tags        = mapTags(entry);
@@ -94,8 +96,8 @@ define([
               , synced = sync[key] || 0
               , diff   = Math.abs(new Date() - new Date(synced));
 
-            // Sync if diff > 15 minutes
-            return diff > (15 * 60 * 1000);
+            // Sync if diff > TTL minutes
+            return diff > (ttl * 60 * 1000);
         },
 
         // Checks if we're online and can sync
@@ -158,6 +160,6 @@ define([
 
     });
 
+    ZC.Api = ZcApi;
 
-    return ZcApi;
-});
+})(getSlug);

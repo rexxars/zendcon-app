@@ -71,6 +71,10 @@ class Client {
         ));
     }
 
+    public function getSessionAbstract() {
+        return $this->request('SessionAbstract.json');
+    }
+
     public function getSpeakers($filtered = false) {
         // According to the ZendCon sync API docs, no other roles than
         // "Speaker" are going to be used. In case this changed, we leave the
@@ -99,27 +103,30 @@ class Client {
     }
 
     public function getSchedule() {
-        $sessions = $this->getSessions();
-        $slots    = $this->getSlots();
-        $roles    = $this->getRoles();
-        $persons  = $this->getPersons();
+        $sessions  = $this->getSessions();
+        $slots     = $this->getSlots();
+        $roles     = $this->getRoles();
+        $persons   = $this->getPersons();
+        $abstracts = $this->getSessionAbstract();
 
-        // We need to merge these four:
+        // We need to merge these five:
         // - Sessions contain the title, track and technology level
         // - Slots contain the date/time, and room number
         // - Roles contain the SessionID => PersonID relation
         // - Persons contain the speakers name, position and company
+        // - Session abstracts contain the extended description of a talk
 
         $schedule = array();
         foreach ($sessions as $sessionId => $session) {
             $entry = array_merge(
+                $session,
                 $this->findEntry($slots, 'SessionID', $sessionId),
                 $this->findEntry($roles, 'EntryID', $sessionId) ?: array(),
-                $session
+                isset($abstracts[$sessionId]) ? $abstracts[$sessionId] : array()
             );
 
             if (isset($entry['PersonID']) && isset($persons[$entry['PersonID']])) {
-                $entry = array_merge($persons[$entry['PersonID']], $entry);
+                $entry = array_merge($entry, $persons[$entry['PersonID']]);
             }
 
             $schedule[$sessionId] = $entry;
