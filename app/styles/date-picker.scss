@@ -1,0 +1,72 @@
+.no-touch {
+    .date-picker a:hover {
+        opacity: 0.8;
+    }
+
+    .date-picker a.active:hover {
+        opacity: 1;
+    }
+}
+
+.date-picker {
+
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0 0 0;
+    width: 100%;
+    display: block;
+    z-index: 2;
+
+    background-image: url(../images/tweed.png);
+    border-bottom: 1px solid #4c5969;
+    box-shadow: inset 0 8px 6px -6px rgba(0, 0, 0, 0.5);
+
+    li {
+        display: inline-block;
+        text-align: center;
+    }
+
+    a {
+        display: block;
+        background: darken(#fff, 5%);
+        border: 2px solid darken(#fff, 15%);
+        border-bottom-width: 0;
+        width: 70px;
+        margin: 0 auto;
+        text-decoration: none;
+        font-weight: bold;
+        opacity: 0.4;
+        //box-shadow: 0 -2px 5px #000;
+        transition: opacity 0.2s ease-in;
+    }
+
+    .day {
+        color: #fff;
+        background: #265778;
+        border: 1px solid darken(#265778, 10%);
+        display: block;
+        text-transform: uppercase;
+        padding: 3px;
+        font-size: 0.9em;
+    }
+
+    .date {
+        color: #000;
+        font-size: 1.5em;
+    }
+
+    .active {
+        opacity: 1;
+        background: #fdf9f2;
+        border-color: darken(#fdf9f2, 10%);
+    }
+
+}
+
+@media only screen and (min-device-pixel-ratio: 1.5) {
+
+    .date-picker {
+        background-image: url(../images/tweed_@2x.png);
+        background-size: 200px 200px;
+    }
+}

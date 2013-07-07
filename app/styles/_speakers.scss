@@ -1,0 +1,37 @@
+.speaker-list {
+
+    margin: 0;
+    padding: 0;
+
+    p {
+        margin: 0;
+    }
+
+    img {
+        width: 64px;
+        border-radius: 3px;
+        margin-right: 0.5em;
+    }
+
+    li {
+        border-bottom: 1px solid #ddd;
+        padding: 0.9em 1em;
+        list-style-type: none;
+    }
+
+    a {
+        color: darken(#82BA41, 10%);
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .meta {
+        font-size: 0.9em;
+    }
+
+    .company {
+        color: #999;
+        font-weight: bold;
+    }
+
+}

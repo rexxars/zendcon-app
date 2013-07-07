@@ -1,0 +1,31 @@
+$FontAwesomePath: '../components/font-awesome/font';
+@import '../components/font-awesome/scss/font-awesome';
+@import 'nav';
+@import 'speakers';
+@import 'date-picker';
+@import 'schedule';
+@import 'animations';
+
+h1 {
+    background: #4c5969;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    padding: 0.3em;
+    font-size: 1em;
+
+    // Not sure we want to use this header
+    display: none;
+}
+
+.loader {
+    width: 128px;
+    height: 128px;
+    display: block;
+
+    margin: 40px auto;
+}
+
+#content {
+    padding-top: 39px;
+}

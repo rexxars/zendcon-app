@@ -1,0 +1,22 @@
+{
+    "name": "rexxars/zendcon-app-backend",
+    "type": "project",
+    "description": "Zendcon conference application backend",
+    "keywords": ["zendcon", "conference", "backend"],
+    "homepage": "http://rexxars.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Espen Hovlandsdal",
+            "email": "espen@hovlandsdal.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "silex/silex": "1.0.*@dev",
+        "guzzle/guzzle": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": { "Zendcon\\": "backend/library" }
+    }
+}

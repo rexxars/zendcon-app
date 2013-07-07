@@ -1,0 +1,97 @@
+.schedule {
+    width: 100%;
+    padding: 0;
+    margin: 5px 0;
+
+    td {
+        height: 40px;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    h3 {
+        border-bottom: 1px solid #265778;
+        color: #265778;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 0.9em;
+        padding: 0 1em;
+        margin: 0;
+    }
+
+    .article {
+        padding: 5px 0 20px 5px;
+        font-size: 0.9em;
+        vertical-align: top;
+        position: relative;
+
+        img.speaker {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            float: right;
+            margin: 0 5px;
+        }
+
+        .title {
+            display: block;
+            font-weight: bold;
+        }
+
+        .meta {
+            font-size: 0.8em;
+            color: lighten(#000, 15%);
+            position: absolute;
+            bottom: 3px;
+            left: 0;
+            width: 100%;
+        }
+
+        .location {
+            display: inline-block;
+            width: 110px;
+            margin: 0 10px;
+        }
+
+        .markers {
+            position: relative;
+            top: 4px;
+
+            img {
+                width: 28px;
+            }
+        }
+    }
+
+    .keynote {
+        background: lighten(#265778, 10%);
+        color: #fff;
+
+        .meta {
+            color: darken(#fff, 15%);
+        }
+    }
+
+    .date {
+        text-align: center;
+        font-size: 0.8em;
+        background: #e6e6e6;
+        border-right: 2px solid #ddd;
+        margin-left: -2px;
+        padding: 0 5px;
+
+        time {
+            display: block;
+
+            &:nth-child(2) {
+                color: lighten(#000, 50%);
+            }
+        }
+    }
+}
