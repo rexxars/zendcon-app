@@ -25,11 +25,19 @@
                 return;
             }
 
+            var Api       = new ZC.Api($http)
+              , attending = Api.getCheckedSessions()
+              //, attending = [1830, 1945]
+              , schedule;
+
             $scope.selectedDate  = date;
             $scope.formattedDate = moment(date).format('dddd, LL');
             $scope.weekDays = moment.langData()._weekdaysShort;
+            $scope.attending = _.object(
+                attending,
+                _.range(1, attending.length + 1)
+            );
 
-            var Api = new ZC.Api($http), schedule;
             Api.getSchedule(function(res) {
                 schedule = _.groupBy(res, 'Date');
                 schedule = _.each(schedule, function(day, date, list) {

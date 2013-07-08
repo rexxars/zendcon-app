@@ -65,23 +65,54 @@
             return this.retrieve('/schedule', onSuccess, onError);
         },
 
+        getCheckedSessions: function() {
+            return JSON.parse(localStorage['zc-checked'] || '[]');
+        },
+
+        addCheckedSession: function(id) {
+            var checked = this.getCheckedSessions() || [];
+            checked.push(parseInt(id, 10));
+            localStorage['zc-checked'] = JSON.stringify(checked);
+            return checked;
+        },
+
+        removeCheckedSession: function(id) {
+            var checked = this.getCheckedSessions() || [];
+            checked = _.without(checked, parseInt(id, 10));
+            localStorage['zc-checked'] = JSON.stringify(checked);
+            return checked;
+        },
+
         filters: {
             '/schedule': function(entry) {
                 // Sorry about this, but I believe these have been tagged incorrectly
                 entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Ramsey' ? 'Ben'   : entry.FirstName;
                 entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Shafik' ? 'Davey' : entry.FirstName;
 
-                entry.Room        = entry.Room || 'Grand Ballroom?';
+                // What do we do without a room? What's the big one called?
+                entry.Room        = entry.Room || '';
+
+                // Prefix numeric rooms with 'Room'
                 entry.Room        = isNaN(entry.Room) ? entry.Room : 'Room ' + entry.Room;
 
                 var start = moment(new Date(entry.Date + ' ' + entry.StartTime))
                   , end   = moment(new Date(entry.Date + ' ' + entry.EndTime));
 
+                // Set slot time in localized time format
                 entry.slot        = start.format('LT') + ' - ' + end.format('LT');
+
+                // Generate slug for this session
                 entry.slug        = getSlug(entry.SessionTitle + '-' + entry.id);
+
+                // Generate slug for this speaker
                 entry.speakerSlug = getSlug(entry.FirstName + '-' + entry.LastName);
+
+                // Figure out which tags to use for this session
                 entry.tags        = mapTags(entry);
+
+                // Is this a keynote?
                 entry.isKeynote   = entry.SessionTitle.toLowerCase().indexOf('keynote') >= 0;
+
                 return entry;
             }
         },

@@ -32,10 +32,10 @@
         <table>
             <tbody>
                 <!-- Loop through each session within slot -->
-                <tr ng-repeat="session in sessions" ng-class="{keynote: session.isKeynote, singlesession: sessions.length == 1 }">
+                <tr ng-repeat="session in sessions" ng-class="{keynote: session.isKeynote, singlesession: sessions.length == 1 }" session-checker>
                     <td session-info="session" class="article"></td>
                     <td class="attending">
-                        <button session="session.id" session-selector></button>
+                        <button session="session.SessionID" session-selector></button>
                     </td>
                 </tr>
             </tbody>

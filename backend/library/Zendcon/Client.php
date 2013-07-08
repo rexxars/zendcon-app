@@ -119,10 +119,10 @@ class Client {
         $schedule = array();
         foreach ($sessions as $sessionId => $session) {
             $entry = array_merge(
-                $session,
                 $this->findEntry($slots, 'SessionID', $sessionId),
                 $this->findEntry($roles, 'EntryID', $sessionId) ?: array(),
-                isset($abstracts[$sessionId]) ? $abstracts[$sessionId] : array()
+                isset($abstracts[$sessionId]) ? $abstracts[$sessionId] : array(),
+                $session
             );
 
             if (isset($entry['PersonID']) && isset($persons[$entry['PersonID']])) {

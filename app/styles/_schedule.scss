@@ -41,6 +41,14 @@
         }
     }
 
+    .not-attendable {
+        opacity: 0.5;
+
+        .attending button {
+            opacity: 1;
+        }
+    }
+
     .article {
         padding: 5px;
         font-size: 0.9em;
@@ -151,6 +159,7 @@
 
             &.checked {
                 background-position: 0 -100px;
+                opacity: 1;
             }
 
             @media
