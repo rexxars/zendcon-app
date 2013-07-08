@@ -5,7 +5,7 @@
     var app = angular.module('zc');
     app.controller('StreamCtrl', [function() {
 
-        // Window height?
+        // Window dimensions?
         var height = window.innerHeight - 45
           , width  = window.innerWidth;
 
