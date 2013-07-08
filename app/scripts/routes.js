@@ -25,7 +25,17 @@
             controller: 'ScheduleCtrl'
         });
 
-        $routeProvider.otherwise({redirectTo: '/speakers'});
+        $routeProvider.when('/schedule/:date/:session', {
+            templateUrl: 'views/schedule.html',
+            controller: 'ScheduleCtrl'
+        });
+
+        $routeProvider.when('/stream', {
+            templateUrl: 'views/stream.html',
+            controller: 'StreamCtrl'
+        });
+
+        $routeProvider.otherwise({redirectTo: '/schedule'});
     }]);
 
 })();

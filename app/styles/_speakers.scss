@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
 
+
     p {
         margin: 0;
     }
@@ -13,16 +14,17 @@
         margin-right: 0.5em;
     }
 
-    li {
+    .speaker {
         border-bottom: 1px solid #ddd;
         padding: 0.9em 1em;
         list-style-type: none;
     }
 
-    a {
-        color: darken(#82BA41, 10%);
+    .name {
+        color: #000;
         font-weight: bold;
         text-decoration: none;
+        line-height: 1.5em;
     }
 
     .meta {
@@ -30,8 +32,16 @@
     }
 
     .company {
-        color: #999;
-        font-weight: bold;
+        color: #7a7b7c;
+        display: block;
+    }
+
+    .talks {
+
+        a {
+            text-decoration: none;
+            color: $activeColor;
+        }
     }
 
 }

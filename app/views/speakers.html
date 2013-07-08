@@ -1,12 +1,21 @@
 <h1>ZendCon 2013 Speakers</h1>
 <ul class="speaker-list">
-    <li ng-repeat="(key, sessions) in speakers" class="pure-g">
+    <li ng-repeat="(key, sessions) in speakers" class="pure-g speaker">
         <div class="pure-u">
             <img onerror="ZC.defaultImg(this)" ng-src="/images/speakers/{{ key }}.png" alt="{{ sessions[0].FirstName }} {{ sessions[0].LastName }}">
         </div>
         <div class="pure-u-5-6">
             <a href="#/speaker/{{ sessions[0].id }}" class="name">{{ sessions[0].FirstName }} {{ sessions[0].LastName }}</a>
-            <p class="meta"><span class="title">{{ sessions[0].JobTitle }}</span> - <span class="company">{{ sessions[0].Company }}</span></p>
+            <p class="meta">
+                <span class="title">{{ sessions[0].JobTitle }}</span>
+                <span class="company">{{ sessions[0].Company }}</span>
+            </p>
+
+            <ul class="talks">
+                <li ng-repeat="session in sessions">
+                    <a ng-href="#/schedule/{{ session.Date }}/{{ session.id }}">{{ session.SessionTitle }}</a>
+                </li>
+            </ul>
         </div>
     </li>
 </ul>
