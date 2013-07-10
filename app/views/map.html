@@ -1,0 +1,17 @@
+<div id="map">
+
+    <div class="zoom">
+        <button class="pure-button plus" ng-click="zoom($event)"><i class="icon-plus"></i></button>
+    </div>
+
+    <div class="floors">
+        <button class="ground-floor pure-button active" ng-click="toggleFloor('ground-floor', $event)">Ground floor</button>
+        <button class="top-floor pure-button" ng-click="toggleFloor('top-floor', $event)">Top floor</button>
+    </div>
+
+    <div class="wrapper" ng-init="initMap()">
+        <img src="images/map/ground-floor.png" data-floor="ground-floor">
+        <img src="images/map/top-floor.png" class="hidden" data-floor="top-floor">
+    </div>
+
+</div>

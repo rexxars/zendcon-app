@@ -1,0 +1,58 @@
+@import 'variables';
+
+#map {
+    position: relative;
+
+    .wrapper {
+        cursor: move;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    img {
+        width: 625px;
+    }
+
+    .floors, .zoom {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        z-index: 5;
+        -webkit-transform: translateZ(0);
+
+        button {
+            opacity: 1;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.45);
+        }
+    }
+
+    .zoom {
+        left: 3px;
+        right: auto;
+
+        button {
+            background: $activeColor;
+            color: #fff;
+        }
+    }
+
+    .floors {
+        .top-floor {
+            background: #06803f;
+            color: #fff;
+        }
+
+        .ground-floor {
+            background: #fecca9;
+        }
+
+        .active {
+            opacity: 0.8;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.75);
+        }
+    }
+
+    .hidden {
+        display: none;
+    }
+}

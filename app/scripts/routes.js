@@ -35,6 +35,11 @@
             controller: 'StreamCtrl'
         });
 
+        $routeProvider.when('/map', {
+            templateUrl: 'views/map.html',
+            controller: 'MapCtrl'
+        });
+
         $routeProvider.otherwise({redirectTo: '/schedule'});
     }]);
 
