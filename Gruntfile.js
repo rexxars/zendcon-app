@@ -44,6 +44,11 @@ module.exports = function (grunt) {
                 ]
             }
         },
+        concat: {
+            options: {
+                separator: ';'
+            }
+        },
         connect: {
             options: {
                 port: 9000,
@@ -138,39 +143,12 @@ module.exports = function (grunt) {
                 }
             }
         },
-        // not used since Uglify task does concat,
-        // but still available if needed
-        /*concat: {
-            dist: {}
-        },*/
-        requirejs: {
-            dist: {
-                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
-                options: {
-                    // `name` and `out` is set by grunt-usemin
-                    baseUrl: yeomanConfig.app + '/scripts',
-                    optimize: 'none',
-                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
-                    // https://github.com/yeoman/grunt-usemin/issues/30
-                    //generateSourceMaps: true,
-                    // required to support SourceMaps
-                    // http://requirejs.org/docs/errors.html#sourcemapcomments
-                    preserveLicenseComments: false,
-                    useStrict: true,
-                    wrap: true,
-                    inlineText: true,
-                    stubModules: ['text']
-                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
-                }
-            }
-        },
         rev: {
             dist: {
                 files: {
                     src: [
                         '<%= yeoman.dist %>/scripts/{,*/}*.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css',
-                        '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
                         '<%= yeoman.dist %>/styles/fonts/*'
                     ]
                 }
@@ -251,8 +229,10 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,png,txt}',
                         '.htaccess',
-                        'images/{,*/}*.{webp,gif}',
-                        'styles/fonts/*'
+                        'views/*',
+                        'styles/fonts/*',
+                        'components/font-awesome/font/*',
+                        'images/{,*/}*.{webp,gif}'
                     ]
                 }, {
                     expand: true,
@@ -313,10 +293,9 @@ module.exports = function (grunt) {
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
-        'requirejs',
         'cssmin',
         'concat',
-        'uglify',
+        //'uglify',
         'copy',
         'rev',
         'usemin'
