@@ -200,10 +200,11 @@ class Client {
         $url .= empty($params) ? '' : ('?' . http_build_query($params));
 
         $cacheKey = __METHOD__ . ':' . $url;
-
-        $response = $this->cache->get($cacheKey);
-        if ($this->readFromCache && !empty($response)) {
-            return $response;
+        if ($this->readFromCache) {
+            $response = $this->cache->get($cacheKey);
+            if (!empty($response)) {
+                return $response;
+            }
         }
 
         $request  = $this->client->get($url);
