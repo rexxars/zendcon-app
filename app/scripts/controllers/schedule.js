@@ -27,7 +27,6 @@
 
             var Api       = new ZC.Api($http)
               , attending = Api.getCheckedSessions()
-              //, attending = [1830, 1945]
               , schedule;
 
             $scope.selectedDate  = date;
@@ -51,9 +50,6 @@
             }, function(res) {
                 console.log('FAILURE', res);
             });
-
-
-            Api.getSpeakers(function() {}, function() {});
         }
     ]);
 
