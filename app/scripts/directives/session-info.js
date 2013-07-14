@@ -1,4 +1,4 @@
-/* global angular */
+/* global angular, $ */
 (function() {
     'use strict';
 
@@ -27,10 +27,17 @@
                 'session': '=sessionInfo'
             },
             link: function(scope, element) {
-                var details = element.find('blockquote')
-                  , toggle  = function() {
-                    details.toggleClass('open');
-                };
+                var open    = false,
+                    details = element.find('blockquote'),
+                    toggle  = function() {
+                        open = !open;
+
+                        var btn = $(this).siblings().find('button')
+                          , pos = open ? btn.position() : { top: '', left: '' };
+
+                        btn.css(pos).toggleClass('positioned', open);
+                        details.toggleClass('open', open);
+                    };
 
                 element.bind('click', toggle);
             }
