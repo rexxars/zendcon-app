@@ -27,17 +27,18 @@
                 'session': '=sessionInfo'
             },
             link: function(scope, element) {
-                var open    = false,
-                    details = element.find('blockquote'),
-                    toggle  = function() {
-                        open = !open;
+                var open    = false
+                  , details = element.find('blockquote');
 
-                        var btn = $(this).siblings().find('button')
-                          , pos = open ? btn.position() : { top: '', left: '' };
+                var toggle  = function() {
+                    open = !open;
 
-                        btn.css(pos).toggleClass('positioned', open);
-                        details.toggleClass('open', open);
-                    };
+                    var btn = $(this).siblings().find('button')
+                      , pos = open ? btn.position() : { top: '', left: '' };
+
+                    btn.css(pos).toggleClass('positioned', open);
+                    details.toggleClass('open', open);
+                };
 
                 element.bind('click', toggle);
             }
