@@ -1,46 +1,53 @@
-/* global angular */
-(function() {
+define(['director', 'pubsub'], function(Router, pubsub) {
     'use strict';
 
-    var app = angular.module('zc');
+    Router = Router || window.Router;
 
-    app.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/speakers', {
-            templateUrl: 'views/speakers.html',
-            controller: 'SpeakerCtrl'
-        });
+    // Director has this weird work-around for chrome that is not actually
+    // a problem in our app. Instead, it introduces a new bug. So, temp fix:
+    if (!window.onpopstate) {
+        window.onpopstate = function onchange(onChangeEvent) {
+            for (var i = 0, l = Router.listeners.length; i < l; i++) {
+                Router.listeners[i](onChangeEvent);
+            }
+        };
+    }
 
-        $routeProvider.when('/sessions', {
-            templateUrl: 'views/sessions.html',
-            controller: 'SessionCtrl'
-        });
+    // Define some constants we can use to look up route matches
+    var routes = {
+        SPEAKERS: 'router-route-speakers',
+        STREAM: 'router-route-stream',
+        MATCH: 'router-route-match'
+    };
 
-        $routeProvider.when('/schedule', {
-            templateUrl: 'views/schedule.html',
-            controller: 'ScheduleCtrl'
-        });
+    // Init router
+    var router = new Router();
 
-        $routeProvider.when('/schedule/:date', {
-            templateUrl: 'views/schedule.html',
-            controller: 'ScheduleCtrl'
-        });
+    router.configure({
+        // Redirect to default location if no matches
+        notfound: function() {
+            router.setRoute('/stream');
+        },
 
-        $routeProvider.when('/schedule/:date/:session', {
-            templateUrl: 'views/schedule.html',
-            controller: 'ScheduleCtrl'
-        });
+        // Generic route matcher
+        on: function() {
+            var route = window.location.pathname.replace(/^\/(.*?)($|\/)/, '$1');
+            pubsub.publish(routes.MATCH, route);
+        },
 
-        $routeProvider.when('/stream', {
-            templateUrl: 'views/stream.html',
-            controller: 'StreamCtrl'
-        });
+        // Let's use pushState instead of these ugly hashes
+        html5history: true
+    });
 
-        $routeProvider.when('/map', {
-            templateUrl: 'views/map.html',
-            controller: 'MapCtrl'
-        });
+    // Define routes
+    router.on('/speakers', function() {
+        pubsub.publish(routes.SPEAKERS);
+    });
 
-        $routeProvider.otherwise({redirectTo: '/schedule'});
-    }]);
+    router.on('/stream', function() {
+        pubsub.publish(routes.STREAM);
+    });
 
-})();
+    routes.router = router;
+    return routes;
+});

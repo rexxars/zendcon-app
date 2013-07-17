@@ -18,5 +18,10 @@
     "strict": true,
     "trailing": true,
     "smarttabs": true,
-    "laxcomma": true
+    "laxcomma": true,
+
+    "predef": [
+        "require",
+        "define"
+    ]
 }

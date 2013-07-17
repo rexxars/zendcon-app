@@ -5,6 +5,7 @@ var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
 var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
+var modRewrite = require('connect-modrewrite');
 
 // # Globbing
 // for performance reasons we're only matching one level down:
@@ -59,6 +60,9 @@ module.exports = function (grunt) {
                     middleware: function (connect) {
                         return [
                             lrSnippet,
+                            modRewrite([
+                                '!\\.html|\\.js|\\.css|\\woff|\\ttf|\\swf$ /index.html'
+                            ]),
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, yeomanConfig.app)
                         ];
@@ -140,6 +144,19 @@ module.exports = function (grunt) {
             server: {
                 options: {
                     debugInfo: true
+                }
+            }
+        },
+        requirejs: {
+            dist: {
+                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+                options: {
+                    // `name` and `out` is set by grunt-usemin
+                    baseUrl: yeomanConfig.app + '/scripts',
+                    optimize: 'none',
+                    preserveLicenseComments: false,
+                    useStrict: true,
+                    wrap: true
                 }
             }
         },
@@ -300,6 +317,7 @@ module.exports = function (grunt) {
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
+        'requirejs',
         'cssmin',
         'concat',
         //'uglify',

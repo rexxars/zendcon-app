@@ -1,13 +1,11 @@
-/* global angular, $, twttr */
-(function() {
+define(['zepto'], function($) {
     'use strict';
 
     var removeLoading = function() {
         $('.stream-loader').remove();
     };
 
-    var app = angular.module('zc');
-    app.controller('StreamCtrl', [function() {
+    var stream = function() {
         // Window dimensions?
         var height = window.innerHeight - 45
           , width  = window.innerWidth;
@@ -22,7 +20,7 @@
             a.setAttribute('width',   width);
 
             if (window.twttr) {
-                twttr.widgets.load(doc.getElementById('content'));
+                window.twttr.widgets.load(doc.getElementById('content'));
                 removeLoading();
             } else {
                 js = doc.createElement(tag);
@@ -33,6 +31,7 @@
             }
         })(document, 'script', 'twitter-wjs');
 
-    }]);
+    };
 
-})();
+    return stream;
+});
