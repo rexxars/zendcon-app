@@ -9,7 +9,7 @@
         '<span class="title">{{ session.SessionTitle }}</span>' +
         '<span class="speaker">{{ session.FirstName }} {{ session.LastName }}</span>' +
         '<div class="meta">' +
-            '<span class="location"><i class="icon-map-marker"></i> {{ session.Room }}</span>' +
+            '<span class="location" ng-show="session.Room.length"><i class="icon-map-marker"></i> {{ session.Room }}</span>' +
             '<span class="markers">' +
                 '<img ng-repeat="tag in session.tags" ng-src="/images/sessions/{{ tag }}.png" />' +
             '</span>' +
