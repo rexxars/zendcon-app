@@ -1,6 +1,10 @@
-/* global angular, _ */
+/* global angular, $, twttr */
 (function() {
     'use strict';
+
+    var removeLoading = function() {
+        $('.stream-loader').remove();
+    };
 
     var app = angular.module('zc');
     app.controller('StreamCtrl', [function() {
@@ -10,21 +14,23 @@
 
         (function(doc, tag, id) {
             var a = doc.getElementsByClassName('twitter-timeline')[0]
-              , fjs  = _.last(doc.getElementsByTagName(tag))
+              , fjs  = doc.getElementsByTagName(tag)[0]
               , prot = /^http:/.test(doc.location) ? 'http' : 'https'
-              , js   = doc.getElementById(id);
+              , js;
 
             a.setAttribute('height', height);
             a.setAttribute('width',   width);
 
-            if (js) {
-                js.parentNode.removeChild(js);
+            if (window.twttr) {
+                twttr.widgets.load(doc.getElementById('content'));
+                removeLoading();
+            } else {
+                js = doc.createElement(tag);
+                js.id = id;
+                js.src = prot + '://platform.twitter.com/widgets.js';
+                js.onload = removeLoading;
+                fjs.parentNode.insertBefore(js, fjs);
             }
-
-            js = doc.createElement(tag);
-            js.id = id;
-            js.src = prot + '://platform.twitter.com/widgets.js';
-            fjs.parentNode.insertBefore(js, fjs);
         })(document, 'script', 'twitter-wjs');
 
     }]);
