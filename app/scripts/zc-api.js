@@ -83,42 +83,37 @@
             return checked;
         },
 
-        filters: {
-            '/schedule': function(entry) {
-                // Sorry about this, but I believe these have been tagged incorrectly
-                entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Ramsey' ? 'Ben'   : entry.FirstName;
-                entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Shafik' ? 'Davey' : entry.FirstName;
+        scheduleFilter: function(entry) {
+            // Sorry about this, but I believe these have been tagged incorrectly
+            entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Ramsey' ? 'Ben'   : entry.FirstName;
+            entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Shafik' ? 'Davey' : entry.FirstName;
 
-                // What do we do without a room? What's the big one called?
-                entry.Room        = entry.Room || '';
+            // What do we do without a room? What's the big one called?
+            entry.Room        = entry.Room || '';
 
-                // Prefix numeric rooms with 'Room'
-                entry.Room        = isNaN(entry.Room) ? entry.Room : 'Room ' + entry.Room;
+            // Prefix numeric rooms with 'Room'
+            entry.Room        = isNaN(entry.Room) || !entry.Room ? entry.Room : 'Room ' + entry.Room;
 
-                var start = moment(new Date(entry.Date + ' ' + entry.StartTime))
-                  , end   = moment(new Date(entry.Date + ' ' + entry.EndTime));
+            var start = moment(entry.Date + ' ' + entry.StartTime, 'YYYY-MM-DD HH:mm:ss')
+              , end   = moment(entry.Date + ' ' + entry.EndTime,   'YYYY-MM-DD HH:mm:ss');
 
-                // Set slot time in localized time format
-                entry.slot        = start.format('LT') + ' - ' + end.format('LT');
+            // Set slot time in localized time format
+            entry.slot        = start.format('LT') + ' - ' + end.format('LT');
 
-                // Generate slug for this session
-                entry.slug        = getSlug(entry.SessionTitle + '-' + entry.id);
+            // Generate slug for this speaker
+            entry.speakerSlug = getSlug(entry.FirstName + '-' + entry.LastName);
 
-                // Generate slug for this speaker
-                entry.speakerSlug = getSlug(entry.FirstName + '-' + entry.LastName);
+            // Figure out which tags to use for this session
+            entry.tags        = mapTags(entry);
 
-                // Figure out which tags to use for this session
-                entry.tags        = mapTags(entry);
+            // Is this a keynote?
+            entry.isKeynote   = entry.SessionTitle.toLowerCase().indexOf('keynote') >= 0;
 
-                // Is this a keynote?
-                entry.isKeynote   = entry.SessionTitle.toLowerCase().indexOf('keynote') >= 0;
-
-                return entry;
-            }
+            return entry;
         },
 
-        filter: function(endpoint, entries) {
-            return _.map(entries, this.filters[endpoint]);
+        filter: function(entries) {
+            return _.map(entries, this.scheduleFilter);
         },
 
         mustSync: function(endpoint) {
@@ -175,14 +170,15 @@
                 this.request(endpoint)
                     .error(onError)
                     .success(_.bind(function(data) {
+                        data = this.filter(data);
                         this.setCached(endpoint, data);
-                        onSuccess(this.filter(endpoint, data));
+                        onSuccess(data);
                     }, this));
             } else {
                 // Fetch from local cache
                 var data = this.getCached(endpoint);
                 if (data) {
-                    onSuccess(this.filter(endpoint, data));
+                    onSuccess(data);
                 } else {
                     onError(data);
                 }
