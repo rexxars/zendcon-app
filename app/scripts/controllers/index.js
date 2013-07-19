@@ -21,4 +21,5 @@ define([
         contentLoader.load(view, controllers[view] || controllers.undef);
     });
 
+    return controllers;
 });
