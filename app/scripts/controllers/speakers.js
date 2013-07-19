@@ -1,18 +1,19 @@
-/* global angular, ZC */
-(function() {
+define(['zc-api'], function(ZcApi) {
     'use strict';
 
-    var app = angular.module('zc');
-    app.controller('SpeakerCtrl', ['$scope', '$http', function($scope, $http) {
+    console.log('ZcApi is: ', ZcApi);
 
-        var Api = new ZC.Api($http);
+    var SpeakerCtrl = function() {
+
+        var Api = new ZcApi();
         Api.getSpeakers(function(res) {
             delete res.blank;
-            $scope.speakers = res;
+            //$scope.speakers = res;
         }, function(res) {
             console.log('FAILURE', res);
         });
 
-    }]);
+    };
 
-})();
+    return SpeakerCtrl;
+});
