@@ -6,14 +6,14 @@ require.config({
         moment: '../components/moment/moment',
         momentlang: '../components/moment/min/langs.min',
         underscore: '../components/lodash/lodash',
-        director: '../components/director/build/director',
+        page: '../components/page/index',
         speakingUrl: '../components/speakingurl/speakingurl.min',
         pubsub: '../components/pubsub-js/src/pubsub',
         handlebars: '../components/require-handlebars-plugin/Handlebars'
     },
     shim: {
-        director: {
-            exports: 'Router'
+        page: {
+            exports: 'page'
         },
         handlebars: {
             exports: 'Handlebars'

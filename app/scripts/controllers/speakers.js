@@ -7,10 +7,6 @@ define([
     'use strict';
 
     var SpeakerCtrl = function() {
-        if (!ZcApi) {
-            console.log('ZcApi is ', ZcApi);
-        }
-
         this.api = new ZcApi();
         this.rendered = 0;
 
@@ -54,8 +50,6 @@ define([
         },
 
         render: function() {
-            console.log(++this.rendered, this.speakers);
-
             if (!this.speakers) {
                 this.fetchData();
                 return;
@@ -69,12 +63,8 @@ define([
                 html += speakerTemplate(speaker);
             }
 
-            if (this.rendered === 3) {
-                console.log(html);
-            }
-
             // Replace content
-            this.content = $('.speaker-list').html(html);
+            this.content = (this.content || $('.speaker-list')).html(html);
         }
     });
 

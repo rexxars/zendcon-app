@@ -1,9 +1,9 @@
-define(['jquery', 'helpers/debug', 'routes', 'controllers/index'], function($, ZC, routes) {
+define(['jquery', 'helpers/debug', 'router', 'controllers/index'], function($, ZC, router) {
     'use strict';
 
     // When document is loaded and ready to go, init the router
     $(function() {
-        routes.router.init();
+        router.start();
     });
 
     return ZC;

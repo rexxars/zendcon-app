@@ -1,6 +1,6 @@
 define([
     'pubsub',
-    'routes',
+    'router',
     'helpers/content-loader',
     'controllers/stream',
     'controllers/speakers',
@@ -19,16 +19,13 @@ define([
     };
 
     // Use the content-loader to load view and fire off post-load events
-    pubsub.subscribe(routes.MATCH, function(e, view) {
+    pubsub.subscribe('router:match', function(e, view) {
         var controller = controllers[view], handler = controllers.undef;
         if (controller && controller.render) {
             handler = controller.render;
         }
 
-        contentLoader.load(view, function() {
-            console.log('view loaded');
-            handler();
-        });
+        contentLoader.load(view, handler);
     });
 
     return controllers;
