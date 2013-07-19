@@ -1,7 +1,7 @@
 define([], function() {
     'use strict';
 
-    var ZC = {};
+    var ZC = window.ZC || {};
 
     ZC.defaultImg = function(img) {
         img.src = '/images/speakers/default.png';
@@ -16,8 +16,6 @@ define([], function() {
             localStorage.removeItem(key);
         }
     };
-
-    window.ZC = ZC;
 
     return ZC;
 });

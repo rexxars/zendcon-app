@@ -1,27 +1,31 @@
-/*global ZC, navigator, localStorage, getSlug, _, moment */
-(function(slugGenerator) {
+define([
+    'underscore',
+    'jquery',
+    'pubsub',
+    'moment',
+    'speakingUrl'
+], function(_, $, pubsub, moment, speakingUrl) {
     'use strict';
 
-    var ttl = 120; // Minutes
+    var ttl = 120 // Minutes
+      , ZC  = window.ZC;
 
     var getSlug = function(input) {
         if (input === 'undefined-undefined') {
             return 'blank';
         }
 
-        return slugGenerator(input);
+        return speakingUrl(input);
     };
 
-    var ZcApi = function($http) {
-        this.httpClient = $http;
-    };
+    var ZcApi = function() {};
 
     var mapTags = function(session) {
-        var tags     = []
-          , level    = (session.TechnologyLevel || '').toLowerCase()
-          , title    = (session.SessionTitle || '').toLowerCase()
-          , abstract = (session.SessionAbstract || '').toLowerCase()
-          , track    = (session.Track || '').toLowerCase();
+        var tags  = []
+          , level = (session.TechnologyLevel || '').toLowerCase()
+          , title = (session.SessionTitle || '').toLowerCase()
+          , abstr = (session.SessionAbstract || '').toLowerCase()
+          , track = (session.Track || '').toLowerCase();
 
 
         if (level.length && !_.contains(level, 'intermediate')) {
@@ -32,7 +36,7 @@
             tags.push('ibmi');
         }
 
-        if (_.contains(title + abstract, 'zend framework') || _.contains(title + abstract, 'zf2')) {
+        if (_.contains(title + abstr, 'zend framework') || _.contains(title + abstr, 'zf2')) {
             tags.push('zf2');
         }
 
@@ -55,14 +59,33 @@
 
         baseUrl: ZC.apiUrl,
 
-        getSpeakers: function(onSuccess, onError) {
-            this.getSchedule(function(res) {
-                onSuccess(_.groupBy(res, 'speakerSlug'));
-            }, onError);
+        // Note: We might want to generate static callback names if we want
+        // to put a varnish-cache in front of the php-backend
+        httpClient: function(url, options) {
+            options = $.extend(options || {}, {
+                dataType: 'jsonp',
+                cache: true,
+                url: url
+            });
+
+            return $.ajax(options);
         },
 
-        getSchedule: function(onSuccess, onError) {
-            return this.retrieve('/schedule', onSuccess, onError);
+        getSpeakers: function(onSuccess, onError, onResponse) {
+            this.getSchedule(function(res) {
+                var speakers = _.groupBy(res, 'speakerSlug');
+                delete speakers.blank;
+
+                var sorted = _.sortBy(speakers, function(list, speakerSlug) {
+                    return speakerSlug;
+                });
+
+                onSuccess(sorted);
+            }, onError, onResponse);
+        },
+
+        getSchedule: function(onSuccess, onError, onResponse) {
+            return this.retrieve('/schedule', onSuccess, onError, onResponse);
         },
 
         getCheckedSessions: function() {
@@ -132,8 +155,8 @@
         },
 
         request: function(endpoint) {
-            return this.httpClient.jsonp(
-                this.baseUrl + endpoint + '?callback=JSON_CALLBACK'
+            return this.httpClient(
+                this.baseUrl + endpoint + '?callback='
             );
         },
 
@@ -159,17 +182,16 @@
             localStorage[key]     = JSON.stringify(data);
         },
 
-        retrieve: function(endpoint, onSuccess, onError) {
+        retrieve: function(endpoint, onSuccess, onError, onResponse) {
             console.log('Fetching ' + endpoint);
-            console.log('Can sync? ', this.canSync());
-            console.log('Must sync? ', this.mustSync(endpoint));
             console.log('Fetch from cache? ', !(this.canSync() && this.mustSync(endpoint)));
 
             if (this.canSync() && this.mustSync(endpoint)) {
                 // Fetch from remote API
                 this.request(endpoint)
-                    .error(onError)
-                    .success(_.bind(function(data) {
+                    .fail(onError)
+                    .always(onResponse || function() {})
+                    .done(_.bind(function(data) {
                         data = this.filter(data);
                         this.setCached(endpoint, data);
                         onSuccess(data);
@@ -189,4 +211,5 @@
 
     ZC.Api = ZcApi;
 
-})(getSlug);
+    return ZcApi;
+});

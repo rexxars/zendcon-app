@@ -1,4 +1,4 @@
-define(['zepto'], function($) {
+define(['jquery'], function($) {
     'use strict';
 
     var content

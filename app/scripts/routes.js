@@ -6,7 +6,11 @@ define(['director', 'pubsub'], function(Router, pubsub) {
     // Director has this weird work-around for chrome that is not actually
     // a problem in our app. Instead, it introduces a new bug. So, temp fix:
     if (!window.onpopstate) {
-        window.onpopstate = function onchange(onChangeEvent) {
+        window.onpopstate = function(onChangeEvent) {
+            if (!Router.listeners) {
+                Router.listeners = [];
+            }
+
             for (var i = 0, l = Router.listeners.length; i < l; i++) {
                 Router.listeners[i](onChangeEvent);
             }
@@ -16,6 +20,7 @@ define(['director', 'pubsub'], function(Router, pubsub) {
     // Define some constants we can use to look up route matches
     var routes = {
         SPEAKERS: 'router-route-speakers',
+        SCHEDULE: 'router-route-schedule',
         STREAM: 'router-route-stream',
         MATCH: 'router-route-match'
     };
@@ -48,6 +53,11 @@ define(['director', 'pubsub'], function(Router, pubsub) {
         pubsub.publish(routes.STREAM);
     });
 
+    router.on('/schedule', function() {
+        pubsub.publish(routes.SCEDULE);
+    });
+
     routes.router = router;
+
     return routes;
 });

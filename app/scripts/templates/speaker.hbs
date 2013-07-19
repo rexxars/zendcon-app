@@ -1,0 +1,17 @@
+<li class="speaker">
+    <img onerror="ZC.defaultImg(this)" src="/images/speakers/{{speakerSlug}}.png" alt="{{FirstName}} {{LastName}}">
+
+    <a href="#/speaker/{{id}}" class="name">{{FirstName}} {{LastName}}</a>
+    <p class="meta">
+        <span class="title">{{JobTitle}}</span>
+        <span class="company">{{Company}}</span>
+    </p>
+
+    <ul class="talks">
+        {{#each talks}}
+            <li>
+                <a href="/schedule/{{Date}}/{{SessionID}}">{{SessionTitle}}</a>
+            </li>
+        {{/each}}
+    </ul>
+</li>
