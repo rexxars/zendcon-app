@@ -2,30 +2,14 @@
 
 <!-- Day schedule -->
 <main class="schedule">
-    <h3 class="date-view">{{ formattedDate }}</h3>
+    <h3 class="date-view"></h3>
 
-    <section class="bubble-load" ng-show="!schedule">
+    <section class="bubble-load">
         <span></span>
         <span></span>
         <span></span>
     </section>
 
-    <!-- Loop through each of the slots -->
-    <section class="session-slot" ng-repeat="(key, sessions) in schedule">
-        <h4 class="timespan">{{ sessions[0].slot }}</h4>
-
-        <table>
-            <tbody>
-                <!-- Loop through each session within slot -->
-                <tr ng-repeat="session in sessions" ng-class="{keynote: session.isKeynote, singlesession: sessions.length == 1 }" session-checker>
-                    <td session-info="session" class="article"></td>
-                    <td class="attending">
-                        <button session="session.SessionID" session-selector></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-    </section>
+    <section class="session-slot"></section>
 
 </main>

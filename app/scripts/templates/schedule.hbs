@@ -1,0 +1,30 @@
+<h4 class="timespan">{{slot}}</h4>
+
+<table>
+    <tbody>
+        {{#each sessions}}
+        <tr class="{{#if isKeynote}}keynote{{/if}} {{#if singleSession}}singlesession{{/if}}">
+            <td class="article">
+                <img onerror="ZC.nukeImg(this)" src="/images/speakers/{{speakerSlug}}.png" class="speaker">
+                <span class="title">{{SessionTitle}}</span>
+                <span class="speaker">{{FirstName}} {{LastName}}</span>
+                <div class="meta">
+                    {{#if Room}}
+                        <span class="location"><i class="icon-map-marker"></i> {{Room}}</span>
+                    {{/if}}
+
+                    <span class="markers">
+                        {{#each tags}}
+                            <img src="/images/sessions/{{this}}.png" />
+                        {{/each}}
+                    </span>
+                </div>
+                <blockquote class="abstract">{{SessionAbstract}}</blockquote>
+            </td>
+            <td class="attending">
+                <button data-session-id="{{SessionID}}">✔</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

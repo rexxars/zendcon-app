@@ -19,8 +19,15 @@ define([
     };
 
     // Use the content-loader to load view and fire off post-load events
-    pubsub.subscribe('router:match', function(e, view) {
-        var controller = controllers[view], handler = controllers.undef;
+    pubsub.subscribe('router:match', function(e, params) {
+        var view       = params.view || params
+          , controller = controllers[view]
+          , handler    = controllers.undef;
+        
+        if (controller && controller.setParams) {
+            controller.setParams(params);
+        }
+
         if (controller && controller.render) {
             handler = controller.render;
         }

@@ -151,12 +151,13 @@ define([
 
         // Checks if we're online and can sync
         canSync: function() {
-            return navigator.onLine;
+            // @todo
+            return navigator.onLine || true;
         },
 
         request: function(endpoint) {
             return this.httpClient(
-                this.baseUrl + endpoint + '?callback='
+                this.baseUrl + endpoint + '?callback=?'
             );
         },
 
@@ -204,12 +205,14 @@ define([
                 } else {
                     onError(data);
                 }
+
+                onResponse();
             }
         }
 
     });
 
-    ZC.Api = ZcApi;
+    ZC.Api = new ZcApi();
 
-    return ZcApi;
+    return ZC.Api;
 });

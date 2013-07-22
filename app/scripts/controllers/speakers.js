@@ -7,9 +7,6 @@ define([
     'use strict';
 
     var SpeakerCtrl = function() {
-        this.api = new ZcApi();
-        this.rendered = 0;
-
         _.bindAll(this, [
             'onSpeakerDataSuccess',
             'onSpeakerDataFail',
@@ -42,7 +39,7 @@ define([
             }
 
             this.fetching = true;
-            this.api.getSpeakers(
+            ZcApi.getSpeakers(
                 this.onSpeakerDataSuccess,
                 this.onSpeakerDataFail,
                 this.onSpeakerData
