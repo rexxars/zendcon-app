@@ -9,6 +9,7 @@ $FontAwesomePath: '../components/font-awesome/font';
 @import 'schedule';
 @import 'map';
 @import 'stream';
+@import 'credits';
 
 h1 {
     background: #4c5969;
@@ -20,14 +21,6 @@ h1 {
 
     // Not sure we want to use this header
     display: none;
-}
-
-.loader {
-    width: 128px;
-    height: 128px;
-    display: block;
-
-    margin: 40px auto;
 }
 
 #content {

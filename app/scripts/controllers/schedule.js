@@ -140,17 +140,13 @@ define([
         },
 
         attachHandlers: function(el) {
-            if (this.delegatedEventsAttached) {
-                return;
-            }
-            
-            this.delegatedEventsAttached = true;
-
             el.on('click', '.attending button', this.onAttendingClick);
             el.on('click', '.article', this.onSessionInfoClick);
         },
 
         onAttendingClick: function(e) {
+            console.log('attend');
+
             var el         = $(this)
               , wasChecked = el.hasClass('checked')
               , row        = el.closest('tr')

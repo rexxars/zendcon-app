@@ -9,9 +9,20 @@ define(['underscore', 'page', 'pubsub'], function(_, page, pubsub) {
         '2013-10-10'
     ];
 
+    // Save last route so we may default to the last viewed page
+    var saveLastRoute = function(url) {
+        localStorage.setItem('lastUrl', url);
+    };
+
+    // Get default location (last, or /schedule)
+    var getDefaultLocation = function() {
+        return localStorage.getItem('lastUrl') || '/schedule';
+    };
+
     // Route match handler
     var onMatch = function(ctx) {
         var route = ctx.path.replace(/^\/(.*?)($|\/.*)/, '$1');
+        saveLastRoute(ctx.path);
         pubsub.publish('router:match', route);
     };
 
@@ -26,6 +37,7 @@ define(['underscore', 'page', 'pubsub'], function(_, page, pubsub) {
             });
         }
 
+        saveLastRoute(ctx.path);
         pubsub.publish('router:match', {
             'view': 'schedule',
             'date': date
@@ -38,11 +50,12 @@ define(['underscore', 'page', 'pubsub'], function(_, page, pubsub) {
     page('/stream', onMatch);
     page('/speakers', onMatch);
     page('/map', onMatch);
+    page('/credits', onMatch);
 
     // Default to the following location
     page('*', function(ctx, next) {
         _.defer(function() {
-            page.replace('/stream');
+            page.replace(getDefaultLocation());
         });
 
         next();

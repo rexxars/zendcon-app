@@ -4,14 +4,16 @@ define([
     'helpers/content-loader',
     'controllers/stream',
     'controllers/speakers',
-    'controllers/schedule'
-], function(pubsub, routes, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl) {
+    'controllers/schedule',
+    'controllers/map'
+], function(pubsub, routes, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl, MapCtrl) {
     'use strict';
 
     var controllers = {
         'stream'  : new StreamCtrl(),
         'schedule': new ScheduleCtrl(),
         'speakers': new SpeakersCtrl(),
+        'map'     : new MapCtrl(),
 
         'undef': function() {
             console.log('No controller for this view');

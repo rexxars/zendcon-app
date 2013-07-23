@@ -1,0 +1,12 @@
+@import 'variables';
+
+#credits {
+    padding: 1em;
+
+    li.header {
+        list-style-type: none;
+        font-weight: bold;
+        color: $navColor;
+        margin-top: 1em;
+    }
+}

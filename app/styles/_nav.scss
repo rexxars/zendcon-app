@@ -1,3 +1,5 @@
+@import 'variables';
+
 .no-touch {
     #nav a:hover {
         color: #fff;
@@ -22,18 +24,111 @@
     li {
         display: inline-block;
         text-align: center;
+        width: 30%;
+
+        &.overflow {
+            width: 10%;
+        }
     }
 
     a {
-        color: lighten(#999, 10%);
+        color: $navTextColor;
         text-decoration: none;
         display: block;
         padding: 10px 0;
-        background: rgb(37, 42, 58);
+        background: $navColor;
 
         &.active {
-            background: #265778;
-            color: #fff;
+            background: $activeColor;
+            color: $navTextActiveColor;
         }
     }
+}
+
+/**
+ * Responsive menu thingy
+ */
+#layout, #menu {
+    -webkit-transition: all 0.2s ease-out;
+       -moz-transition: all 0.2s ease-out;
+        -ms-transition: all 0.2s ease-out;
+         -o-transition: all 0.2s ease-out;
+            transition: all 0.2s ease-out;
+}
+
+#layout {
+    padding-right: 150px;
+    right: 0;
+}
+
+#menu {
+    margin-right: -150px;
+    width: 150px;
+    position: fixed;
+    top: 42px;
+    right: 150px;
+    bottom: 0;
+    z-index: 1000;
+    background: lighten($navColor, 5%);
+    overflow-y: auto;
+    -webkit-overflow-scroll: touch;
+
+    .pure-menu-open {
+        background: transparent;
+        border-bottom: 0;
+        border-left: 0;
+    }
+
+    .pure-menu a {
+        color: $navTextColor;
+        padding-left: 10px;
+
+        &.active {
+            background: $activeColor;
+            color: $navTextActiveColor;
+        }
+    }
+
+    ul {
+        a:hover {
+            background: darken($activeColor, 5%);
+            color: $navTextActiveColor;
+        }
+
+        i {
+            margin-right: 5px;
+            width: 18px;
+            display: inline-block;
+            text-align: center;
+        }
+    }
+
+    .pure-menu-heading {
+        margin: 0;
+        color: $navTextActiveColor;
+        text-transform: none;
+    }
+}
+
+@media (max-width: 870px) {
+
+    #layout {
+        position: relative;
+        padding-right: 0;
+
+        &.active {
+            position: relative;
+            right: 150px;
+
+            #menu {
+                right: 150px;
+                width: 150px;
+            }
+        }
+    }
+
+    #menu {
+        right: 0;
+    }
+
 }

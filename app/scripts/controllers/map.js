@@ -1,107 +1,148 @@
-/* global angular */
-(function($) {
+define(['jquery'], function($) {
     'use strict';
 
-    var app    = angular.module('zc')
-      , win    = $(window)
+    var win    = $(window)
       , active = localStorage['map-layer'] || 'ground-floor'
       , loaded = 0
-      , map, nav, floors;
+      , map, nav, floors, dragX, dragY, scrolling;
 
-    var resizeMap = function() {
-        map.css({
-            'height': win.height() - nav.height()
-        });
+    var MapCtrl = function() {
+        this.init();
+
+        _.bindAll(this, [
+            'render'
+        ]);
     };
 
-    var onMapLoaded = function() {
-        if (++loaded !== 2) {
-            return;
-        }
+    _.extend(MapCtrl.prototype, {
+        init: function() {
+            win.on('resize', this.resizeMap).trigger('resize');
+        },
 
-        var image = $(this)
-          , img   = image.width() ? image : image.siblings();
+        render: function() {
+            loaded = 0;
 
-        var centerPrct = {
-            'ground-floor': {
-                left: 0.512,
-                top: 0.581
-            },
-            'top-floor': {
-                left: 0.3744,
-                top: 0.5759
+            map    = $('#map .wrapper');
+            floors = $('#map .floors');
+            nav    = $('#nav');
+
+            this.setActiveFloor(active);
+            win.trigger('resize');
+            this.attachEvents();
+        },
+
+        attachEvents: function() {
+            map.on('dblclick', this.toggleZoom);
+            map.find('img').on('load', this.onMapLoaded);
+
+            $('#map .zoom button').on('click', this.toggleZoom);
+            floors.find('button').on('click', this.toggleFloor);
+
+            map.on(Modernizr.touch ? 'touchstart' : 'mousedown', this.dragStart);
+            map.on(Modernizr.touch ? 'touchmove'  : 'mousemove', this.dragMove);
+            map.on(Modernizr.touch ? 'touchend'   : 'mouseup',   this.dragEnd);
+        },
+
+        dragStart: function(e) {
+            e.preventDefault();
+            scrolling = true;
+
+            dragX = this.scrollLeft + (e.touches ? e.touches[0].pageX : e.pageX);
+            dragY = this.scrollTop  + (e.touches ? e.touches[0].pageY : e.pageY);
+        },
+
+        dragMove: function(e) {
+            e.preventDefault();
+
+            if (scrolling) {
+                this.scrollLeft = dragX - (e.touches ? e.touches[0].pageX : e.pageX);
+                this.scrollTop  = dragY - (e.touches ? e.touches[0].pageY : e.pageY);
             }
-        }, centerPixel = {
-            left: Math.floor((img.width()  * centerPrct[active].left) - (map.width() / 2)),
-            top:  Math.floor((img.height() * centerPrct[active].top)  - (map.height() / 2))
-        };
+        },
 
-        map
-            .prop('scrollLeft', centerPixel.left)
-            .prop('scrollTop',  centerPixel.top)
-            .kinetic({
-                maxvelocity: 20,
-                triggerHardware: true
+        dragEnd: function(e) {
+            e.preventDefault();
+            scrolling = false;
+        },
+
+        resizeMap: function() {
+            if (!map) {
+                return;
+            }
+
+            map.css({
+                'height': win.height() - nav.height()
             });
-    };
+        },
 
-    var initMap   = function() {
-        map    = $('#map .wrapper');
-        floors = $('#map .floors');
-        nav    = $('#nav');
+        onMapLoaded: function() {
+            if (++loaded !== 2) {
+                return;
+            }
 
-        setActiveFloor(active);
-        win.on('resize', resizeMap).trigger('resize');
-        map.on('dblclick', toggleZoom);
+            var image = $(this)
+              , img   = image.width() ? image : image.siblings();
 
-        map.children('img').on('load', onMapLoaded);
-    };
+            var centerPrct = {
+                'ground-floor': {
+                    left: 0.512,
+                    top: 0.581
+                },
+                'top-floor': {
+                    left: 0.3744,
+                    top: 0.5759
+                }
+            }, centerPixel = {
+                left: Math.floor((img.width()  * centerPrct[active].left) - (map.width() / 2)),
+                top:  Math.floor((img.height() * centerPrct[active].top)  - (map.height() / 2))
+            };
 
-    var setActiveFloor = function(floor) {
-        map
-            .find('img[data-floor="' + floor + '"]')
-            .removeClass('hidden')
-            .siblings()
-            .addClass('hidden');
+            map
+                .prop('scrollLeft', centerPixel.left)
+                .prop('scrollTop',  centerPixel.top);
+        },
 
-        floors
-            .find('.' + floor)
-            .addClass('active')
-            .siblings()
-            .removeClass('active');
-    };
+        setActiveFloor: function(floor) {
+            map
+                .find('img[data-floor="' + floor + '"]')
+                .removeClass('hidden')
+                .siblings()
+                .addClass('hidden');
 
-    var toggleFloor = function(floor, e) {
-        if (!map || angular.element(e.target).hasClass('active')) {
-            return;
+            floors
+                .find('.' + floor)
+                .addClass('active')
+                .siblings()
+                .removeClass('active');
+        },
+
+        toggleFloor: function() {
+            var el = $(this), floor = el.data('floor');
+            if (!map || el.hasClass('active')) {
+                return;
+            }
+
+            localStorage['map-layer'] = floor;
+            map.children('img').toggleClass('hidden');
+            $(this).toggleClass('active').siblings().toggleClass('active');
+        },
+
+        toggleZoom: function(e) {
+            if (!map) {
+                return;
+            } else if (e.type === 'dblclick') {
+                e = { target: $('#map .zoom button').get(0) };
+            }
+
+            var el    = $((e.target.nodeName !== 'BUTTON') ? e.target.parentNode : e.target)
+              , width = el.hasClass('plus') ? 'auto' : $(window).width();
+
+            el.toggleClass('plus minus').find('i').toggleClass('icon-plus icon-minus');
+
+            map.find('img').css('width', width);
         }
+    });
 
-        localStorage['map-layer'] = floor;
-        map.children('img').toggleClass('hidden');
-        $(e.target).toggleClass('active').siblings().toggleClass('active');
-    };
+    return MapCtrl;
 
-    var toggleZoom = function(e) {
-        if (!map) {
-            return;
-        } else if (e.type === 'dblclick') {
-            e = { target: $('#map .zoom button').get(0) };
-        }
-
-        var el    = $((e.target.nodeName !== 'BUTTON') ? e.target.parentNode : e.target)
-          , width = el.hasClass('plus') ? 'auto' : map.find('img').not('.hidden').width() / 2;
-
-        el.toggleClass('plus minus').find('i').toggleClass('icon-plus icon-minus');
-
-        map.find('img').css('width', width);
-    };
-
-    app.controller('MapCtrl', ['$scope', function($scope) {
-
-        $scope.initMap = initMap;
-        $scope.toggleFloor = toggleFloor;
-        $scope.zoom = toggleZoom;
-
-    }]);
-
-})(window.Zepto || window.jQuery);
+});

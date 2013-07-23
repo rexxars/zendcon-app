@@ -61,7 +61,7 @@ define([
             }
 
             // Replace content
-            this.content = (this.content || $('.speaker-list')).html(html);
+            this.content = $('.speaker-list').html(html);
         }
     });
 

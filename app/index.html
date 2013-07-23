@@ -18,12 +18,25 @@
     <body>
 
         <div id="layout">
+            <nav id="menu">
+                <div class="pure-menu pure-menu-open">
+                    <a class="pure-menu-heading" href="#">ZendCon '13</a>
+
+                    <ul>
+                        <li><a href="/map" data-route="map"><i class="icon-map-marker"></i> Map</a></li>
+                        <li><a href="/info" data-route="info"><i class="icon-info"></i> General info</a></li>
+                        <li><a href="/uncon" data-route="uncon"><i class="icon-heart"></i> UnCon</a></li>
+                        <li><a href="/credits" data-route="credits"><i class="icon-question-sign"></i> Credits</a></li>
+                    </ul>
+                </div>
+            </nav>
+
             <nav id="nav">
                 <ul class="pure-g">
-                    <li class="pure-u-1-4"><a href="/schedule"><i class="icon-calendar"></i> Schedule</a></li>
-                    <li class="pure-u-1-4"><a href="/speakers"><i class="icon-user"></i> Speakers</a></li>
-                    <li class="pure-u-1-4"><a href="/map"><i class="icon-map-marker"></i> Map</a></li>
-                    <li class="pure-u-1-4"><a href="/stream"><i class="icon-twitter"></i> Stream</a></li>
+                    <li class="pure-u-1-4"><a href="/schedule" data-route="schedule"><i class="icon-calendar"></i> Schedule</a></li>
+                    <li class="pure-u-1-4"><a href="/speakers" data-route="speakers"><i class="icon-user"></i> Speakers</a></li>
+                    <li class="pure-u-1-4"><a href="/stream" data-route="stream"><i class="icon-twitter"></i> Stream</a></li>
+                    <li class="pure-u-1-4 overflow"><a href="#"><i class="icon-reorder"></i></a></li>
                 </ul>
             </nav>
 
@@ -40,6 +53,7 @@
 
         <!-- Get this train rolling! -->
         <script>ZC = { apiUrl: 'http://zendcon.rexxars.com/api' };</script>
+        <script>ZC = { apiUrl: 'http://localhost/app' };</script>
 
         <!-- build:js scripts/main.js -->
         <script data-main="/scripts/main" src="/components/requirejs/require.js"></script>
