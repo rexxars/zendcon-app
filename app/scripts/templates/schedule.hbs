@@ -4,7 +4,7 @@
     <tbody>
         {{#each sessions}}
         <tr class="{{#if isKeynote}}keynote{{/if}} {{#if singleSession}}singlesession{{/if}}">
-            <td class="article">
+            <td class="article" data-session-id="{{EntryID}}">
                 <img onerror="ZC.nukeImg(this)" src="/images/speakers/{{speakerSlug}}.png" class="speaker">
                 <span class="title">{{SessionTitle}}</span>
                 <span class="speaker">{{FirstName}} {{LastName}}</span>
@@ -19,7 +19,9 @@
                         {{/each}}
                     </span>
                 </div>
-                <blockquote class="abstract">{{SessionAbstract}}</blockquote>
+                {{#if SessionAbstract}}
+                    <blockquote class="abstract">{{SessionAbstract}}</blockquote>
+                {{/if}}
             </td>
             <td class="attending">
                 <button data-session-id="{{SessionID}}">✔</button>

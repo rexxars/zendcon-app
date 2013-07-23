@@ -1,4 +1,5 @@
 define(['jquery', 'pubsub'], function($, pubsub) {
+    'use strict';
 
     // Handle active/inactive class based on routes
     var items = $('#nav a, #menu a'), route;
@@ -11,15 +12,14 @@ define(['jquery', 'pubsub'], function($, pubsub) {
 
     // Handle overflow menu
     var menuElements = $('#menu, #layout');
-    items.last().on('click', function(e) {
+    items.filter('.expand').on('click', function(e) {
         e.preventDefault();
-
         menuElements.toggleClass('active');
     });
 
     // Handle overflow menu item clicks
-    $('#menu a').on('click', function() {
-        menuElements.toggleClass('active');
+    items.not('.expand').on('click', function() {
+        menuElements.removeClass('active');
     });
 
     return {};

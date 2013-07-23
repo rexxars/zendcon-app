@@ -2,9 +2,10 @@ define([
     'underscore',
     'jquery',
     'zc-api',
+    'moment',
     'hbs!templates/schedule',
     'hbs!templates/datepicker'
-], function(_, $, ZcApi, scheduleTemplate, datepickerTemplate) {
+], function(_, $, ZcApi, moment, scheduleTemplate, datepickerTemplate) {
     'use strict';
 
     var ScheduleCtrl = function() {
@@ -22,17 +23,17 @@ define([
         onScheduleDataSuccess: function(schedule) {
             // Divide schedule into dates
             schedule = _.groupBy(schedule, 'Date');
-            
+
             // Iterate over dates, organizing the sessions further
             schedule = _.each(schedule, function(day, date, list) {
                 // Assign sessions to slots (start - end time)
                 list[date] = _.groupBy(day, 'StartTime');
-                
+
                 // Iterate over slots
                 _.each(list[date], function(slot, slotDate, slots) {
                     // Sort by the room number
                     slots[slotDate] = _.sortBy(slot, 'Room');
-                    
+
                     // See if this is the only session within the slot
                     _.each(slots[slotDate], function(session) {
                         session.singleSession = slot.length === 1;
@@ -80,7 +81,7 @@ define([
                 'friday'   : localized[5],
                 'saturday' : localized[6],
                 'sunday'   : localized[0]
-              };
+            };
 
             var viewParams = {
                 'weekDays': weekDays,
@@ -93,7 +94,7 @@ define([
         },
 
         render: function() {
-            if (!this.schedule || this.currentDate != this.params.date) {
+            if (!this.schedule || this.currentDate !== this.params.date) {
                 this.currentDate = this.params.date;
                 this.fetchData();
                 return;
@@ -111,7 +112,7 @@ define([
             var params = {}, sessions, key, html = '';
             for (key in this.schedule) {
                 sessions = this.schedule[key];
-                
+
                 params.slot = sessions[0].slot;
                 params.sessions = sessions;
 
@@ -126,6 +127,7 @@ define([
             this.content = $('.session-slot').html(html);
 
             this.setCheckedSessionStatus(this.content, viewParams.attending);
+            this.gotoSession(this.params.session);
             this.attachHandlers(this.content);
         },
 
@@ -139,14 +141,21 @@ define([
             });
         },
 
+        gotoSession: function(sessionId) {
+            if (!sessionId) {
+                return;
+            }
+
+            var el = $('td[data-session-id="' + sessionId + '"]');
+            this.onSessionInfoClick.apply(el.get(0));
+        },
+
         attachHandlers: function(el) {
             el.on('click', '.attending button', this.onAttendingClick);
             el.on('click', '.article', this.onSessionInfoClick);
         },
 
-        onAttendingClick: function(e) {
-            console.log('attend');
-
+        onAttendingClick: function() {
             var el         = $(this)
               , wasChecked = el.hasClass('checked')
               , row        = el.closest('tr')
@@ -174,15 +183,29 @@ define([
             el.toggleClass('checked');
         },
 
-        onSessionInfoClick: function(e) {
+        onSessionInfoClick: function() {
             var el       = $(this)
               , abstract = el.find('.abstract')
               , open     = abstract.hasClass('open')
               , btn      = el.siblings().find('button')
               , pos      = open ? { top: '', left: '' } : btn.position();
 
+            if (!abstract.length) {
+                return;
+            }
+
             btn.css(pos).toggleClass('positioned', !open);
             abstract.toggleClass('open', !open);
+
+            // Scroll to abstract if not presently in view
+            if (!open) {
+                pos = abstract.offset();
+                if (pos.top + abstract.height() > (window.scrollY + window.innerHeight)) {
+                    $('html, body').animate({
+                        scrollTop: pos.top - 150
+                    });
+                }
+            }
         }
     });
 

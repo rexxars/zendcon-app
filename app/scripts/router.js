@@ -39,14 +39,16 @@ define(['underscore', 'page', 'pubsub'], function(_, page, pubsub) {
 
         saveLastRoute(ctx.path);
         pubsub.publish('router:match', {
-            'view': 'schedule',
-            'date': date
+            'view'   : 'schedule',
+            'date'   : date,
+            'session': ctx.params.sessionId || 0
         });
     };
 
     // Set up routes
     page('/schedule', onScheduleMatch);
     page('/schedule/:date', onScheduleMatch);
+    page('/schedule/:date/:sessionId', onScheduleMatch);
     page('/stream', onMatch);
     page('/speakers', onMatch);
     page('/map', onMatch);

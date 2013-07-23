@@ -24,10 +24,10 @@
     li {
         display: inline-block;
         text-align: center;
-        width: 30%;
+        width: 29%;
 
         &.overflow {
-            width: 10%;
+            width: 13%;
         }
     }
 
@@ -35,7 +35,7 @@
         color: $navTextColor;
         text-decoration: none;
         display: block;
-        padding: 10px 0;
+        padding: 15px 0;
         background: $navColor;
 
         &.active {
@@ -65,7 +65,7 @@
     margin-right: -150px;
     width: 150px;
     position: fixed;
-    top: 42px;
+    top: $navBarHeight;
     right: 150px;
     bottom: 0;
     z-index: 1000;
@@ -75,8 +75,7 @@
 
     .pure-menu-open {
         background: transparent;
-        border-bottom: 0;
-        border-left: 0;
+        border: 0;
     }
 
     .pure-menu a {
