@@ -11,6 +11,4 @@ $config['readFromCache'] = false;
 // Config says not to read from cache, but it will still *write*
 // Thus, all we need for this to work is to actually call the getters
 $feedClient = new Zendcon\Client($config);
-$schedule = $feedClient->getSchedule();
-
-echo json_encode($schedule) . PHP_EOL;
+$feedClient->getSchedule();
