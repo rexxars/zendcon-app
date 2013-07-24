@@ -14,9 +14,6 @@ require.config({
     shim: {
         page: {
             exports: 'page'
-        },
-        handlebars: {
-            exports: 'Handlebars'
         }
     },
     hbs: {
