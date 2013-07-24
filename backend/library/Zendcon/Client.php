@@ -16,12 +16,31 @@ use Guzzle\Http\Client as GuzzleClient,
 
 class Client {
 
-    const BASE_URL = 'https://zendcon.confex.com/zendcon/2013/sync.cgi';
+    const BASE_URL = 'https://zendcon.confex.com/zendcon/2013/sync.cgi/';
     const DEFAULT_TTL = 900;
 
     private $client;
     private $cache;
     private $readFromCache;
+
+    private $filterKeys = array(
+        'session' => array(
+            'SessionProgram',
+            'SessionType',
+            'FinalSessionNumber',
+        ),
+        'slot' => array(
+            'Property',
+        ),
+        'role' => array(
+            'EntryTable',
+            'OrderWithinRole',
+            'Role',
+            'SequenceOfRoles',
+        ),
+        'person' => array(),
+        'abstract' => array(),
+    );
 
     public function __construct($config) {
         $this->client = new GuzzleClient(self::BASE_URL);
@@ -32,43 +51,22 @@ class Client {
 
     public function getSessions() {
         $sessions = $this->request('Session.json');
-        return $this->filterPropsFromEntries($sessions, array(
-            'SessionProgram',
-            'SessionType',
-            'FinalSessionNumber',
-        ));
+        return $this->filterPropsFromEntries($sessions, $this->filterKeys['session']);
     }
 
     public function getRoles() {
         $roles = $this->request('Role.json');
-        return $this->filterPropsFromEntries($roles, array(
-            'EntryTable',
-            'OrderWithinRole',
-            'Role',
-            'SequenceOfRoles',
-        ));
+        return $this->filterPropsFromEntries($roles, $this->filterKeys['role']);
     }
 
     public function getPersons() {
         $persons = $this->request('Person.json');
-        array_walk($persons, function(&$person) {
-            if ($person['JobTitle'] == 'Test') {
-                $person['JobTitle'] = '';
-            }
-
-            if ($person['Company'] == 'Test') {
-                $person['Company'] = '';
-            }
-        });
-
         return $persons;
     }
 
     public function getSlots() {
         $slots = $this->request('Slot.json');
-        return $this->filterPropsFromEntries($slots, array(
-            'Property',
-        ));
+        return $this->filterPropsFromEntries($slots, $this->filterKeys['slot']);
     }
 
     public function getSessionAbstract() {
@@ -103,11 +101,44 @@ class Client {
     }
 
     public function getSchedule() {
-        $sessions  = $this->getSessions();
-        $slots     = $this->getSlots();
-        $roles     = $this->getRoles();
-        $persons   = $this->getPersons();
-        $abstracts = $this->getSessionAbstract();
+        $cacheKey = __METHOD__;
+        if ($this->readFromCache) {
+            $response = $this->cache->get($cacheKey);
+            if (!empty($response)) {
+                return $response;
+            }
+        }
+
+        $combined = array();
+        try {
+            $responses = $this->client->send(array(
+                $this->client->get('Session.json'),
+                $this->client->get('Slot.json'),
+                $this->client->get('Role.json'),
+                $this->client->get('Person.json'),
+                $this->client->get('SessionAbstract.json'),
+            ));
+
+            $responses = array_combine(array(
+                'session',
+                'slot',
+                'role',
+                'person',
+                'abstract'
+            ), $responses);
+
+            foreach ($responses as $key => $response) {
+                $body = json_decode($response->getBody(), true);
+                $data = isset($body['data']) ? $body['data'] : array();
+                $data = array_map(array($this, 'filterProps'), $data);
+                $data = $this->assignKeys($data);
+                $data = $this->filterPropsFromEntries($data, $this->filterKeys[$key]);
+
+                $combined[$key] = $data;
+            }
+        } catch (Exception $e) {
+            return false;
+        }
 
         // We need to merge these five:
         // - Sessions contain the title, track and technology level
@@ -117,16 +148,16 @@ class Client {
         // - Session abstracts contain the extended description of a talk
 
         $schedule = array();
-        foreach ($sessions as $sessionId => $session) {
+        foreach ($combined['session'] as $sessionId => $session) {
             $entry = array_merge(
-                $this->findEntry($slots, 'SessionID', $sessionId),
-                $this->findEntry($roles, 'EntryID', $sessionId) ?: array(),
-                isset($abstracts[$sessionId]) ? $abstracts[$sessionId] : array(),
+                $this->findEntry($combined['slot'], 'SessionID', $sessionId),
+                $this->findEntry($combined['role'], 'EntryID', $sessionId) ?: array(),
+                isset($combined['abstract'][$sessionId]) ? $combined['abstract'][$sessionId] : array(),
                 $session
             );
 
-            if (isset($entry['PersonID']) && isset($persons[$entry['PersonID']])) {
-                $entry = array_merge($entry, $persons[$entry['PersonID']]);
+            if (isset($entry['PersonID']) && isset($combined['person'][$entry['PersonID']])) {
+                $entry = array_merge($entry, $combined['person'][$entry['PersonID']]);
             }
 
             $schedule[$sessionId] = $entry;
@@ -139,6 +170,10 @@ class Client {
 
             return strcmp($aDate, $bDate);
         });
+
+        if (!empty($schedule)) {
+            $this->cache->set($cacheKey, $schedule, self::DEFAULT_TTL);
+        }
 
         return $schedule;
     }
