@@ -1,15 +1,15 @@
 require.config({
     paths: {
-        hbs: '../components/requirejs-hbs/hbs',
-        text: '../components/requirejs-text/text',
+        hbs: '../bower_components/requirejs-hbs/hbs',
+        text: '../bower_components/requirejs-text/text',
         jquery: 'libs/jquery.min',
-        moment: '../components/moment/moment',
-        momentlang: '../components/moment/min/langs.min',
-        underscore: '../components/lodash/lodash',
-        page: '../components/page/index',
-        speakingUrl: '../components/speakingurl/speakingurl.min',
-        pubsub: '../components/pubsub-js/src/pubsub',
-        handlebars: '../components/require-handlebars-plugin/Handlebars'
+        moment: '../bower_components/moment/moment',
+        momentlang: '../bower_components/moment/min/langs.min',
+        underscore: '../bower_components/lodash/lodash',
+        page: '../bower_components/page/index',
+        speakingUrl: '../bower_components/speakingurl/speakingurl.min',
+        pubsub: '../bower_components/pubsub-js/src/pubsub',
+        handlebars: '../bower_components/require-handlebars-plugin/Handlebars'
     },
     shim: {
         page: {
@@ -21,6 +21,6 @@ require.config({
     }
 });
 
-define(['app'], function() {
+require(['app'], function() {
     'use strict';
 });

@@ -1,17 +1,11 @@
-// Generated on 2013-06-27 using generator-webapp 0.2.3
+// Generated on 2013-07-24 using generator-webapp 0.2.6
 'use strict';
-var LIVERELOAD_PORT = 35728;
+var LIVERELOAD_PORT = 35729;
 var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
 var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
 var modRewrite = require('connect-modrewrite');
-
-// # Globbing
-// for performance reasons we're only matching one level down:
-// 'test/spec/{,*/}*.js'
-// use this if you want to recursively match all subfolders:
-// 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
     // load all grunt tasks
@@ -26,9 +20,6 @@ module.exports = function (grunt) {
     grunt.initConfig({
         yeoman: yeomanConfig,
         watch: {
-            options: {
-                nospawn: true
-            },
             compass: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
                 tasks: ['compass:server']
@@ -38,16 +29,11 @@ module.exports = function (grunt) {
                     livereload: LIVERELOAD_PORT
                 },
                 files: [
-                    '<%= yeoman.app %>/**/*.html',
+                    '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
-                    '{.tmp,<%= yeoman.app %>}/**/*.js',
+                    '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
-            }
-        },
-        concat: {
-            options: {
-                separator: ';'
             }
         },
         connect: {
@@ -69,20 +55,13 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            test: {
-                options: {
-                    middleware: function (connect) {
-                        return [
-                            mountFolder(connect, '.tmp'),
-                            mountFolder(connect, 'test')
-                        ];
-                    }
-                }
-            },
             dist: {
                 options: {
                     middleware: function (connect) {
                         return [
+                            modRewrite([
+                                '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif)($|\\?) /index.html'
+                            ]),
                             mountFolder(connect, yeomanConfig.dist)
                         ];
                     }
@@ -114,8 +93,7 @@ module.exports = function (grunt) {
             all: [
                 'Gruntfile.js',
                 '<%= yeoman.app %>/scripts/{,*/}*.js',
-                '!<%= yeoman.app %>/scripts/vendor/*',
-                'test/spec/{,*/}*.js'
+                '!<%= yeoman.app %>/scripts/vendor/*'
             ]
         },
         mocha: {
@@ -134,7 +112,7 @@ module.exports = function (grunt) {
                 imagesDir: '<%= yeoman.app %>/images',
                 javascriptsDir: '<%= yeoman.app %>/scripts',
                 fontsDir: '<%= yeoman.app %>/styles/fonts',
-                importPath: '<%= yeoman.app %>/components',
+                importPath: '<%= yeoman.app %>/bower_components',
                 httpImagesPath: '/images',
                 httpGeneratedImagesPath: '/images/generated',
                 httpFontsPath: '/styles/fonts',
@@ -147,6 +125,11 @@ module.exports = function (grunt) {
                 }
             }
         },
+        // not used since Uglify task does concat,
+        // but still available if needed
+        /*concat: {
+            dist: {}
+        },*/
         requirejs: {
             dist: {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
@@ -154,9 +137,15 @@ module.exports = function (grunt) {
                     // `name` and `out` is set by grunt-usemin
                     baseUrl: yeomanConfig.app + '/scripts',
                     optimize: 'none',
+                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
+                    // https://github.com/yeoman/grunt-usemin/issues/30
+                    //generateSourceMaps: true,
+                    // required to support SourceMaps
+                    // http://requirejs.org/docs/errors.html#sourcemapcomments
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true
+                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
                 }
             }
         },
@@ -166,6 +155,7 @@ module.exports = function (grunt) {
                     src: [
                         '<%= yeoman.dist %>/scripts/{,*/}*.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css',
+                        '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
                         '<%= yeoman.dist %>/styles/fonts/*'
                     ]
                 }
@@ -246,9 +236,10 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,png,txt}',
                         '.htaccess',
+                        'images/{,*/}*.{webp,gif}',
                         'views/*',
                         'styles/fonts/*',
-                        'components/font-awesome/font/*',
+                        'bower_components/font-awesome/font/*',
                         'images/{,*/}*.{webp,gif}'
                     ]
                 }, {
@@ -270,13 +261,10 @@ module.exports = function (grunt) {
         },
         concurrent: {
             server: [
-                'compass:server'
-            ],
-            test: [
                 'compass'
             ],
             dist: [
-                'compass:dist',
+                'compass',
                 'imagemin',
                 'svgmin',
                 'htmlmin'
@@ -306,29 +294,21 @@ module.exports = function (grunt) {
         ]);
     });
 
-    grunt.registerTask('test', [
-        'clean:server',
-        'concurrent:test',
-        'connect:test',
-        'mocha'
-    ]);
-
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
         'concurrent:dist',
         'requirejs',
-        'cssmin',
         'concat',
-        //'uglify',
-        'copy',
+        'cssmin',
+        'uglify',
+        'copy:dist',
         'rev',
         'usemin'
     ]);
 
     grunt.registerTask('default', [
         'jshint',
-        'test',
         'build'
     ]);
 };
