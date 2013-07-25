@@ -2,11 +2,88 @@
 
 #credits {
     padding: 1em;
+    max-width: 340px;
+    margin: 0 auto;
+
+    .author {
+        padding: 0.5em;
+        background: #f0e6d6;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .tech {
+        border: 2px solid #f0e6d6;
+        padding: 0 1em;
+
+        p {
+            text-align: center;
+            margin: 1em 0;
+        }
+    }
+
+    hr {
+        background: $navColor;
+        height: 2px;
+        border: 0;
+    }
+
+    h2, img {
+        width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        float: left;
+    }
+
+    h2 {
+        line-height: 60px;
+        text-align: center;
+    }
+
+    .php {
+        background: #5a68a5;
+        text-shadow:
+           -1px -1px 0 #fff,
+            1px -1px 0 #fff,
+            -1px 1px 0 #fff,
+             1px 1px 0 #fff;
+    }
+
+    .js {
+        background: #f0db4e;
+        color: #323230;
+    }
+
+    .frontend {
+        background: #444 url(../images/frontend-icon.png);
+    }
+
+    img {
+        margin-top: 10px;
+    }
+
+    .author-name {
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    p, ul {
+        margin-left: 85px;
+        padding-left: 0;
+    }
+
+    li {
+        margin-left: 2em;
+    }
 
     li.header {
         list-style-type: none;
         font-weight: bold;
         color: $navColor;
-        margin-top: 1em;
+        margin: 1em 0 0.3em 1em;
+    }
+
+    .enjoy {
+        font-size: 1.5em;
+        font-weight: bold;
     }
 }

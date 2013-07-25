@@ -80,7 +80,7 @@
 
     .pure-menu a {
         color: $navTextColor;
-        padding-left: 10px;
+        padding: 10px 20px 10px 10px;
 
         &.active {
             background: $activeColor;
@@ -100,12 +100,6 @@
             display: inline-block;
             text-align: center;
         }
-    }
-
-    .pure-menu-heading {
-        margin: 0;
-        color: $navTextActiveColor;
-        text-transform: none;
     }
 }
 
