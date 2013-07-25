@@ -1,4 +1,5 @@
-define(['jquery'], function($) {
+/* global Modernizr */
+define(['jquery', 'underscore'], function($, _) {
     'use strict';
 
     var win    = $(window)
@@ -41,18 +42,25 @@ define(['jquery'], function($) {
             map.on(Modernizr.touch ? 'touchstart' : 'mousedown', this.dragStart);
             map.on(Modernizr.touch ? 'touchmove'  : 'mousemove', this.dragMove);
             map.on(Modernizr.touch ? 'touchend'   : 'mouseup',   this.dragEnd);
+            win.on(Modernizr.touch ? 'touchend'   : 'mouseup',   this.dragWinEnd);
         },
 
         dragStart: function(e) {
-            e.preventDefault();
-            scrolling = true;
+            if (e.type === 'mousedown' && e.which !== 1) {
+                return;
+            }
 
+            e.preventDefault();
+            e = e.originalEvent || e;
+
+            scrolling = true;
             dragX = this.scrollLeft + (e.touches ? e.touches[0].pageX : e.pageX);
             dragY = this.scrollTop  + (e.touches ? e.touches[0].pageY : e.pageY);
         },
 
         dragMove: function(e) {
             e.preventDefault();
+            e = e.originalEvent || e;
 
             if (scrolling) {
                 this.scrollLeft = dragX - (e.touches ? e.touches[0].pageX : e.pageX);
@@ -62,6 +70,10 @@ define(['jquery'], function($) {
 
         dragEnd: function(e) {
             e.preventDefault();
+            scrolling = false;
+        },
+
+        dragWinEnd: function() {
             scrolling = false;
         },
 
