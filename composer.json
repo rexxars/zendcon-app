@@ -14,7 +14,8 @@
     "require": {
         "php": ">=5.3.3",
         "silex/silex": "1.0.*@dev",
-        "guzzle/guzzle": "3.7.*"
+        "guzzle/guzzle": "3.7.*",
+        "rexxars/joindin-client": "0.0.1"
     },
     "autoload": {
         "psr-0": { "Zendcon\\": "backend/library" }
