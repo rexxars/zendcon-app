@@ -26,3 +26,7 @@ h1 {
 #content {
     padding-top: $navBarHeight;
 }
+
+body.no-scroll {
+    overflow: hidden;
+}

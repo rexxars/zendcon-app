@@ -1,4 +1,4 @@
-define(['underscore', 'jquery'], function(_, $) {
+define(['underscore', 'jquery', 'pubsub'], function(_, $, pubsub) {
     'use strict';
 
     var removeLoading = function() {
@@ -10,11 +10,17 @@ define(['underscore', 'jquery'], function(_, $) {
     };
 
     _.extend(StreamCtrl.prototype, {
-        init: function() {},
+        init: function() {
+            pubsub.subscribe('router:match', this.onRouteMatch);
+        },
+
+        onRouteMatch: function(e, route) {
+            $(document.body).toggleClass('no-scroll', route === 'stream');
+        },
 
         render: function() {
             // Window dimensions?
-            var height = window.innerHeight - 45
+            var height = window.innerHeight - 47
               , width  = window.innerWidth;
 
             (function(doc, tag, id) {

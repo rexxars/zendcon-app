@@ -8,11 +8,11 @@
 }
 
 #nav {
-
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    right: 0;
+    width: 101%; /* <== WAT. iPhone does not fill the screen at 100%. With 101% however... */
     z-index: 10;
     -webkit-transform: translateZ(0);
 
@@ -24,10 +24,10 @@
     li {
         display: inline-block;
         text-align: center;
-        width: 29%;
+        width: 29.5%;
 
         &.overflow {
-            width: 13%;
+            width: 11.5%;
         }
     }
 
