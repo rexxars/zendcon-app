@@ -88,6 +88,10 @@ define([
             return this.retrieve('/schedule', onSuccess, onError, onResponse);
         },
 
+        getUnconSchedule: function(onSuccess, onError, onResponse) {
+            return this.retrieve('/uncon', onSuccess, onError, onResponse);
+        },
+
         getCheckedSessions: function() {
             return JSON.parse(localStorage['zc-checked'] || '[]');
         },
@@ -135,8 +139,30 @@ define([
             return entry;
         },
 
-        filter: function(entries) {
-            return _.map(entries, this.scheduleFilter);
+        unconFilter: function(entry) {
+            var start = moment(entry.Date + ' ' + entry.StartTime, 'YYYY-MM-DD HH:mm:ss');
+
+            // Set slot time in localized time format
+            entry.slot        = start.format('LT');
+
+            // Generate slug for this speaker
+            entry.speakerSlug = getSlug(entry.FirstName + '-' + entry.LastName);
+
+            // Figure out which tags to use for this session
+            entry.tags        = mapTags(entry);
+
+            return entry;
+        },
+
+
+        filter: function(endpoint, entries) {
+            if (endpoint === '/schedule') {
+                return _.map(entries, this.scheduleFilter);
+            } else if (endpoint === '/uncon') {
+                return _.map(entries, this.unconFilter);
+            }
+
+            return entries;
         },
 
         mustSync: function(endpoint) {
@@ -193,7 +219,7 @@ define([
                     .fail(onError)
                     .always(onResponse || function() {})
                     .done(_.bind(function(data) {
-                        data = this.filter(data);
+                        data = this.filter(endpoint, data);
                         this.setCached(endpoint, data);
                         onSuccess(data);
                     }, this));
