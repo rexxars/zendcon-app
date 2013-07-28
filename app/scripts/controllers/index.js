@@ -5,8 +5,9 @@ define([
     'controllers/stream',
     'controllers/speakers',
     'controllers/schedule',
-    'controllers/map'
-], function(pubsub, routes, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl, MapCtrl) {
+    'controllers/map',
+    'controllers/uncon'
+], function(pubsub, routes, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl, MapCtrl, UnconCtrl) {
     'use strict';
 
     var controllers = {
@@ -14,6 +15,7 @@ define([
         'schedule': new ScheduleCtrl(),
         'speakers': new SpeakersCtrl(),
         'map'     : new MapCtrl(),
+        'uncon'   : new UnconCtrl(),
 
         'undef': function() {
             console.log('No controller for this view');
@@ -25,7 +27,7 @@ define([
         var view       = params.view || params
           , controller = controllers[view]
           , handler    = controllers.undef;
-        
+
         if (controller && controller.setParams) {
             controller.setParams(params);
         }
