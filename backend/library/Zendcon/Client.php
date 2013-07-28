@@ -12,7 +12,8 @@ namespace Zendcon;
 
 use Guzzle\Http\Client as GuzzleClient,
     Exception,
-    Memcached;
+    Memcached,
+    DateTime;
 
 class Client {
 
@@ -174,6 +175,64 @@ class Client {
         if (!empty($schedule)) {
             $this->cache->set($cacheKey, $schedule, self::DEFAULT_TTL);
         }
+
+        return $schedule;
+    }
+
+    public function convertJoindInTalksToSchedule($talks) {
+        $schedule = array();
+
+        foreach ($talks as $talk) {
+            // Let's push the ID up to prevent colliding with the ZendCon session IDs
+            $talk['id'] += 30000;
+
+            // For what we can directly translate...
+            $session = array(
+                'SessionID'       => $talk['id'],
+                'EntryID'         => $talk['id'],
+                'SessionAbstract' => $talk['talk_description'],
+                'SessionTitle'    => $talk['talk_title'],
+
+                /*
+                'JobTitle'        => '',
+                'Company'         => '',
+                'Track'           => '',
+                'EndTime'         => '',
+                'Room'            => '',
+                'TechnologyLevel' => '',
+                */
+            );
+
+            // Parse date
+            $date = DateTime::createFromFormat(DateTime::W3C, $talk['start_date']);
+            $session['Date'] = $date->format('Y-m-d');
+            $session['StartTime'] = $date->format('H:i:s');
+
+            // Parse speaker names into firstname/lastname
+            $speakers = array_reduce($talk['speakers'], function($current, $speaker) {
+                if (!is_array($current)) {
+                    $current = array();
+                }
+
+                $current[] = $speaker['speaker_name'];
+                return $current;
+            });
+
+            $speakers = implode(', ', $speakers);
+            $name = explode(' ', $speakers, 2);
+            $session['FirstName'] = $name[0];
+            $session['LastName']  = isset($name[1]) ? $name[1] : '';
+
+            $schedule[] = $session;
+        }
+
+        // Now sort by date/time
+        usort($schedule, function($a, $b) {
+            $aDate = $a['Date'] . $a['StartTime'];
+            $bDate = $b['Date'] . $b['StartTime'];
+
+            return strcmp($aDate, $bDate);
+        });
 
         return $schedule;
     }

@@ -45,6 +45,35 @@ $app->get('/schedule', function() use ($app, $feedClient) {
     return $app->json($schedule);
 });
 
+$app->get('/schedule', function() use ($app, $feedClient) {
+    $schedule = $feedClient->getSchedule();
+
+    if (empty($schedule)) {
+        return $app->json(array('error' => 'Invalid response'), 503);
+    }
+
+    return $app->json($schedule);
+});
+
+$app->get('/uncon', function() use ($app, $feedClient, $config) {
+    $joindIn  = JoindIn\Client::factory();
+    $talks = $joindIn->getEventTalks(
+        $config['joind.in']['unconEventId'],
+        array(
+            'verbose' => 'yes',
+            'resultsperpage' => 0,
+        )
+    );
+
+    if (empty($talks)) {
+        return $app->json(array('error' => 'Invalid response'), 503);
+    }
+
+    $schedule = $feedClient->convertJoindInTalksToSchedule($talks);
+
+    return $app->json($schedule);
+});
+
 // Enable JSONP-support
 $app->after(function(Request $request, Response $response) {
     if (!$request->get('callback')) {
