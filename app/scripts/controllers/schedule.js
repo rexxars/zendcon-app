@@ -3,9 +3,10 @@ define([
     'jquery',
     'zc-api',
     'moment',
+    'page',
     'hbs!templates/schedule',
     'hbs!templates/datepicker'
-], function(_, $, ZcApi, moment, scheduleTemplate, datepickerTemplate) {
+], function(_, $, ZcApi, moment, page, scheduleTemplate, datepickerTemplate, undefined) {
     'use strict';
 
     var ScheduleCtrl = function() {
@@ -21,11 +22,19 @@ define([
 
     _.extend(ScheduleCtrl.prototype, {
         onScheduleDataSuccess: function(schedule) {
+            // First date in our schedule
+            var firstDate;
+
             // Divide schedule into dates
             schedule = _.groupBy(schedule, 'Date');
 
             // Iterate over dates, organizing the sessions further
             schedule = _.each(schedule, function(day, date, list) {
+                // Assign first date in schedule
+                if (!firstDate) {
+                    firstDate = date;
+                }
+
                 // Assign sessions to slots (start - end time)
                 list[date] = _.groupBy(day, 'StartTime');
 
@@ -41,6 +50,15 @@ define([
                 });
             });
 
+            if (!schedule[this.params.date]) {
+                var today = new Date().toISOString().substr(0, 10);
+                var redir = schedule[today] ? today : firstDate;
+                return _.defer(function() {
+                    page.replace('/schedule/' + redir);
+                });
+            }
+
+            this.fullSchedule = schedule;
             this.schedule = schedule[this.params.date] || {};
             this.render();
         },
@@ -71,26 +89,35 @@ define([
         },
 
         getViewParams: function() {
-            var date      = this.params.date
-              , localized = moment.langData()._weekdaysShort
-              , weekDays  = {
-                'monday'   : localized[1],
-                'tuesday'  : localized[2],
-                'wednesday': localized[3],
-                'thursday' : localized[4],
-                'friday'   : localized[5],
-                'saturday' : localized[6],
-                'sunday'   : localized[0]
-            };
-
+            var date = this.params.date;
             var viewParams = {
-                'weekDays': weekDays,
                 'selectedDate': date,
                 'formattedDate': moment(date).format('dddd, LL'),
                 'attending': ZcApi.getCheckedSessions()
             };
 
             return viewParams;
+        },
+
+        getDatePickerParams: function() {
+            var params = {
+                dates: [],
+                numDates: 0,
+                route: 'schedule'
+            }, date, key;
+
+            for (key in this.fullSchedule) {
+                date = moment(key, 'YYYY-MM-DD');
+                params.dates.push({
+                    isoDate: key,
+                    weekDay: date.format('ddd'),
+                    day    : date.format('D')
+                });
+
+                params.numDates++;
+            }
+
+            return params;
         },
 
         render: function() {
@@ -120,14 +147,14 @@ define([
             }
 
             // Add datepicker
-            this.datePicker = $(datepickerTemplate(viewParams)).insertBefore('.schedule');
+            this.datePicker = $(datepickerTemplate(this.getDatePickerParams())).insertBefore('.schedule');
             this.datePicker.find('a[data-date="' + viewParams.selectedDate + '"]').addClass('active');
 
             this.loading = $('.schedule .bubble-load').remove();
             this.content = $('.session-slot').html(html);
 
             this.setCheckedSessionStatus(this.content, viewParams.attending);
-            this.gotoSession(this.params.session);
+            this.gotoSession(this.params.sessionId);
             this.attachHandlers(this.content);
         },
 
@@ -188,7 +215,8 @@ define([
               , abstract = el.find('.abstract')
               , open     = abstract.hasClass('open')
               , btn      = el.siblings().find('button')
-              , pos      = open ? { top: '', left: '' } : btn.position();
+              , pos      = open ? { top: '', left: '' } : btn.position()
+              , goTo     = window.location.pathname;
 
             if (!abstract.length) {
                 return;
@@ -205,7 +233,19 @@ define([
                         scrollTop: pos.top - 150
                     });
                 }
+
+                goTo = goTo.replace(/(\/|\/\d+)?$/, '/' + el.data('session-id'));
+            } else {
+                goTo = goTo.replace(/\/\d+$/, '');
             }
+
+            // Update location
+            page.replace(
+                goTo,
+                undefined,
+                undefined,
+                false
+            );
         }
     });
 

@@ -1,18 +1,8 @@
 <ol class="date-picker pure-g">
-    <li class="pure-u-1-4"><a href="/schedule/2013-10-07" data-date="2013-10-07">
-        <span class="day">{{weekDays.monday}}</span>
-        <span class="date">7</span>
+    {{#each dates}}
+    <li class="pure-u-1-{{../numDates}}"><a href="/{{../route}}/{{isoDate}}" data-date="{{isoDate}}">
+        <span class="day">{{weekDay}}</span>
+        <span class="date">{{day}}</span>
     </a></li>
-    <li class="pure-u-1-4"><a href="/schedule/2013-10-08" data-date="2013-10-08">
-        <span class="day">{{weekDays.tuesday}}</span>
-        <span class="date">8</span>
-    </a></li>
-    <li class="pure-u-1-4"><a href="/schedule/2013-10-09" data-date="2013-10-09">
-        <span class="day">{{weekDays.wednesday}}</span>
-        <span class="date">9</span>
-    </a></li>
-    <li class="pure-u-1-4"><a href="/schedule/2013-10-10" data-date="2013-10-10">
-        <span class="day">{{weekDays.thursday}}</span>
-        <span class="date">10</span>
-    </a></li>
+    {{/each}}
 </ol>
