@@ -34,7 +34,8 @@
         background: darken(#fff, 5%);
         border: 2px solid darken(#fff, 15%);
         border-bottom-width: 0;
-        width: 70px;
+        min-width: 70px;
+        max-width: 85px;
         margin: 0 auto;
         text-decoration: none;
         font-weight: bold;
