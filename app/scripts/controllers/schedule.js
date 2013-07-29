@@ -103,7 +103,7 @@ define([
             var params = {
                 dates: [],
                 numDates: 0,
-                route: 'schedule'
+                route: this.params.view
             }, date, key;
 
             for (key in this.fullSchedule) {

@@ -4,10 +4,20 @@ define([
     'zc-api',
     'moment',
     'page',
-    'hbs!templates/schedule',
-    'hbs!templates/datepicker'
-], function(_, $, ZcApi, moment, page, scheduleTemplate, datepickerTemplate) {
+    'controllers/schedule'
+], function(_, $, ZcApi, moment, page, ScheduleCtrl) {
     'use strict';
+
+    if (!Object.create) {
+        Object.create = (function() {
+            function F() {}
+
+            return function(o) {
+                F.prototype = o;
+                return new F();
+            };
+        })();
+    }
 
     var UnconCtrl = function() {
         this.params = {};
@@ -19,6 +29,8 @@ define([
             'render'
         ]);
     };
+
+    UnconCtrl.prototype = Object.create(ScheduleCtrl.prototype);
 
     _.extend(UnconCtrl.prototype, {
         onScheduleDataSuccess: function(schedule) {
@@ -52,18 +64,6 @@ define([
             this.render();
         },
 
-        onScheduleDataFail: function() {
-            console.log('Failed to fetch schedule data');
-        },
-
-        onScheduleData: function() {
-            this.fetching = false;
-        },
-
-        setParams: function(params) {
-            this.params = params;
-        },
-
         fetchData: function() {
             if (this.fetching) {
                 return;
@@ -75,153 +75,6 @@ define([
                 this.onScheduleDataFail,
                 this.onScheduleData
             );
-        },
-
-        getViewParams: function() {
-            var date = this.params.date;
-            var viewParams = {
-                'selectedDate': date,
-                'formattedDate': moment(date).format('dddd, LL'),
-                'attending': ZcApi.getCheckedSessions()
-            };
-
-            return viewParams;
-        },
-
-        getDatePickerParams: function() {
-            var params = {
-                dates: [],
-                numDates: 0,
-                route: 'uncon'
-            }, date, key;
-
-            for (key in this.fullSchedule) {
-                date = moment(key, 'YYYY-MM-DD');
-                params.dates.push({
-                    isoDate: key,
-                    weekDay: date.format('ddd'),
-                    day    : date.format('D')
-                });
-
-                params.numDates++;
-            }
-
-            return params;
-        },
-
-        render: function() {
-            if (!this.schedule || this.currentDate !== this.params.date) {
-                this.currentDate = this.params.date;
-                this.fetchData();
-                return;
-            }
-
-            // Populate templates
-            var viewParams = this.getViewParams();
-
-            // Set formatted date to date view
-            this.dateView = $('.date-view').text(viewParams.formattedDate);
-
-            // Render each slot section
-            this.slotView = $('.session-slot');
-
-            var params = {}, sessions, key, html = '';
-            for (key in this.schedule) {
-                sessions = this.schedule[key];
-
-                params.slot = sessions[0].slot;
-                params.sessions = sessions;
-
-                html += scheduleTemplate(params);
-            }
-
-            // Add datepicker
-            this.datePicker = $(datepickerTemplate(this.getDatePickerParams())).insertBefore('.schedule');
-            this.datePicker.find('a[data-date="' + viewParams.selectedDate + '"]').addClass('active');
-
-            this.loading = $('.schedule .bubble-load').remove();
-            this.content = $('.session-slot').html(html);
-
-            this.setCheckedSessionStatus(this.content, viewParams.attending);
-            this.gotoSession(this.params.session);
-            this.attachHandlers(this.content);
-        },
-
-        setCheckedSessionStatus: function(el, attending, btn) {
-            _.each(attending, function(sessionId) {
-                // Mark session as attending
-                btn = el.find('button[data-session-id="' + sessionId + '"]').addClass('checked');
-
-                // Mark siblings within slot as unattendable
-                btn.closest('tr').siblings().addClass('not-attendable');
-            });
-        },
-
-        gotoSession: function(sessionId) {
-            if (!sessionId) {
-                return;
-            }
-
-            var el = $('td[data-session-id="' + sessionId + '"]');
-            this.onSessionInfoClick.apply(el.get(0));
-        },
-
-        attachHandlers: function(el) {
-            el.on('click', '.attending button', this.onAttendingClick);
-            el.on('click', '.article', this.onSessionInfoClick);
-        },
-
-        onAttendingClick: function() {
-            var el         = $(this)
-              , wasChecked = el.hasClass('checked')
-              , row        = el.closest('tr')
-              , rows       = row.parent().children('tr')
-              , sessionId  = el.data('session-id')
-              , current;
-
-            // Mark rows as unattendable based on checked state
-            rows.toggleClass('not-attendable', !wasChecked);
-            row.removeClass('not-attendable');
-
-            if (wasChecked) {
-                // It used to be checked, so remove the session
-                ZcApi.removeCheckedSession(sessionId);
-            } else {
-                // It used to be unchecked, add session and remove any existing
-                ZcApi.addCheckedSession(sessionId);
-                current = rows.find('.checked').removeClass('checked');
-                if (current.length) {
-                    ZcApi.removeCheckedSession(current.data('session-id'));
-                }
-            }
-
-            // Mark this session as checked
-            el.toggleClass('checked');
-        },
-
-        onSessionInfoClick: function() {
-            var el       = $(this)
-              , abstract = el.find('.abstract')
-              , open     = abstract.hasClass('open')
-              , btn      = el.siblings().find('button')
-              , pos      = open ? { top: '', left: '' } : btn.position();
-
-            if (!abstract.length) {
-                return;
-            }
-
-            btn.css(pos).toggleClass('positioned', !open);
-            abstract.toggleClass('open', !open);
-
-            // Scroll to abstract if not presently in view
-            if (!open) {
-                pos = abstract.offset();
-                if (pos.top + abstract.height() > (window.scrollY + window.innerHeight)) {
-                    $('html, body').animate({
-                        scrollTop: pos.top - 150
-                    });
-                }
-            }
         }
     });
 
