@@ -192,15 +192,6 @@ class Client {
                 'EntryID'         => $talk['id'],
                 'SessionAbstract' => $talk['talk_description'],
                 'SessionTitle'    => $talk['talk_title'],
-
-                /*
-                'JobTitle'        => '',
-                'Company'         => '',
-                'Track'           => '',
-                'EndTime'         => '',
-                'Room'            => '',
-                'TechnologyLevel' => '',
-                */
             );
 
             // Parse date
@@ -208,20 +199,27 @@ class Client {
             $session['Date'] = $date->format('Y-m-d');
             $session['StartTime'] = $date->format('H:i:s');
 
-            // Parse speaker names into firstname/lastname
-            $speakers = array_reduce($talk['speakers'], function($current, $speaker) {
-                if (!is_array($current)) {
-                    $current = array();
-                }
+            // Parse speaker names into firstname/lastname, get speaker image if present
+            $speakerImg = null;
+            $speakers = array_reduce(
+                $talk['speakers'],
+                function($current, $speaker) use (&$speakerImg) {
+                    if (!is_array($current)) {
+                        $current = array();
+                    }
 
-                $current[] = $speaker['speaker_name'];
-                return $current;
-            });
+                    $image      = isset($speaker['speaker_img']) ? $speaker['speaker_img'] : null;
+                    $speakerImg = $speakerImg ?: $image;
+                    $current[]  = $speaker['speaker_name'];
+                    return $current;
+                }
+            );
 
             $speakers = implode(', ', $speakers);
-            $name = explode(' ', $speakers, 2);
-            $session['FirstName'] = $name[0];
-            $session['LastName']  = isset($name[1]) ? $name[1] : '';
+            $name     = explode(' ', $speakers, 2);
+            $session['FirstName']  = $name[0];
+            $session['LastName']   = isset($name[1]) ? $name[1] : '';
+            $session['SpeakerImg'] = $speakerImg;
 
             $schedule[] = $session;
         }
