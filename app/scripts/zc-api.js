@@ -7,7 +7,7 @@ define([
 ], function(_, $, pubsub, moment, speakingUrl) {
     'use strict';
 
-    var ttl = 0.001 // Minutes
+    var ttl = 10 // Minutes
       , ZC  = window.ZC;
 
     var getSlug = function(input) {
