@@ -60,7 +60,6 @@
     z-index: 1000;
     background: lighten($navColor, 5%);
     overflow-y: auto;
-    -webkit-overflow-scroll: touch;
 
     .pure-menu-open {
         background: transparent;
