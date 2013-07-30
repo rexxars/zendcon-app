@@ -177,8 +177,7 @@ define([
 
         // Checks if we're online and can sync
         canSync: function() {
-            // @todo
-            return navigator.onLine || true;
+            return navigator.onLine;
         },
 
         request: function(endpoint) {
@@ -219,7 +218,7 @@ define([
             if (!cacheData || (this.canSync() && this.mustSync(endpoint))) {
                 // Fetch from remote API
                 return this.request(endpoint)
-                    .fail(onError)
+                    .fail(cacheData ? function() {} : onError)
                     .always(onResponse)
                     .done(_.bind(function(data) {
                         data = this.filter(endpoint, data);

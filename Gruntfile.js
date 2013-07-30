@@ -11,6 +11,9 @@ module.exports = function (grunt) {
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    // find font-awesome version
+    var fontAwesomeVersion = require('./bower.json').dependencies['font-awesome'].replace(/[^\d.]/g, '');
+
     // configurable paths
     var yeomanConfig = {
         app: 'app',
@@ -47,7 +50,7 @@ module.exports = function (grunt) {
                         return [
                             lrSnippet,
                             modRewrite([
-                                '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif)($|\\?) /index.html'
+                                '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif|appcache|txt)($|\\?) /index.html'
                             ]),
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, yeomanConfig.app)
@@ -60,7 +63,7 @@ module.exports = function (grunt) {
                     middleware: function (connect) {
                         return [
                             modRewrite([
-                                '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif)($|\\?) /index.html'
+                                '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif|appcache|txt)($|\\?) /index.html'
                             ]),
                             mountFolder(connect, yeomanConfig.dist)
                         ];
@@ -96,14 +99,6 @@ module.exports = function (grunt) {
                 '!<%= yeoman.app %>/scripts/vendor/*'
             ]
         },
-        mocha: {
-            all: {
-                options: {
-                    run: true,
-                    urls: ['http://localhost:<%= connect.options.port %>/index.html']
-                }
-            }
-        },
         compass: {
             options: {
                 sassDir: '<%= yeoman.app %>/styles',
@@ -125,11 +120,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        // not used since Uglify task does concat,
-        // but still available if needed
-        /*concat: {
-            dist: {}
-        },*/
         requirejs: {
             dist: {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
@@ -137,15 +127,9 @@ module.exports = function (grunt) {
                     // `name` and `out` is set by grunt-usemin
                     baseUrl: yeomanConfig.app + '/scripts',
                     optimize: 'none',
-                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
-                    // https://github.com/yeoman/grunt-usemin/issues/30
-                    //generateSourceMaps: true,
-                    // required to support SourceMaps
-                    // http://requirejs.org/docs/errors.html#sourcemapcomments
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true
-                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
                 }
             }
         },
@@ -183,16 +167,6 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        svgmin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/images',
-                    src: '{,*/}*.svg',
-                    dest: '<%= yeoman.dist %>/images'
-                }]
-            }
-        },
         cssmin: {
             dist: {
                 files: {
@@ -205,17 +179,7 @@ module.exports = function (grunt) {
         },
         htmlmin: {
             dist: {
-                options: {
-                    /*removeCommentsFromCDATA: true,
-                    // https://github.com/yeoman/grunt-usemin/issues/44
-                    //collapseWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true*/
-                },
+                options: {},
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.app %>',
@@ -258,6 +222,36 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        manifest: {
+            generate: {
+                options: {
+                    basePath: '<%= yeoman.dist %>',
+                    network: ['http://*', 'https://*', '*'],
+                    cache: [
+                        'bower_components/font-awesome/font/fontawesome-webfont.woff?v=' + fontAwesomeVersion,
+                        'bower_components/font-awesome/font/fontawesome-webfont.eot?v=' + fontAwesomeVersion,
+                        'bower_components/font-awesome/font/fontawesome-webfont.ttf?v=' + fontAwesomeVersion,
+                        'bower_components/font-awesome/font/fontawesome-webfont.svg?v=' + fontAwesomeVersion
+                    ],
+                    fallback: [
+                        '/ /index.html',
+                        '/images/speakers /images/speakers/default.png'
+                    ],
+                    timestamp: true
+                },
+                src: [
+                    'bower_components/**/*.js',
+                    'images/**/*.{png,jpg,jpeg,gif}',
+                    'scripts/**/*.js',
+                    'styles/**/*.css',
+                    'views/**/*.html',
+                    'apple-touch-icon.png',
+                    'favicon.ico',
+                    'index.html'
+                ],
+                dest: '<%= yeoman.dist %>/manifest.appcache'
+            }
+        },
         concurrent: {
             server: [
                 'compass'
@@ -265,7 +259,6 @@ module.exports = function (grunt) {
             dist: [
                 'compass',
                 'imagemin',
-                'svgmin',
                 'htmlmin'
             ]
         },
@@ -303,7 +296,8 @@ module.exports = function (grunt) {
         'uglify',
         'copy:dist',
         'rev',
-        'usemin'
+        'usemin',
+        'manifest'
     ]);
 
     grunt.registerTask('default', [

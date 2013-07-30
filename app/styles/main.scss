@@ -1,5 +1,5 @@
 $FontAwesomePath: '../bower_components/font-awesome/font';
-@import 'pure-min.css';
+@import 'pure';
 @import '../bower_components/font-awesome/scss/font-awesome';
 @import 'variables';
 @import 'loader';
@@ -32,6 +32,7 @@ body.no-scroll {
 
     @media print {
         box-shadow: none;
+        /* yes */
     }
 }
 

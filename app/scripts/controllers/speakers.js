@@ -26,7 +26,11 @@ define([
         },
 
         onSpeakerDataFail: function() {
-            console.log('Failed to fetch speaker data');
+            var error = '<p class="error">Terribly sorry, but it seems we failed to ' +
+                        'retrieve the speaker data... Are you connected to the internet? ' +
+                        'Try <a href="javascript:window.location.reload();">reloading</a>?';
+
+            $('#content').html(error);
         },
 
         onSpeakerData: function() {

@@ -1,0 +1,7 @@
+CACHE MANIFEST
+# This will be overwritten when building
+
+CACHE:
+
+NETWORK:
+*

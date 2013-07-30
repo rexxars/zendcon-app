@@ -1,15 +1,28 @@
 define([
     'pubsub',
     'router',
+    'zc-api',
     'helpers/content-loader',
     'controllers/stream',
     'controllers/speakers',
     'controllers/schedule',
     'controllers/map',
     'controllers/uncon'
-], function(pubsub, routes, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl, MapCtrl, UnconCtrl) {
+], function(pubsub, routes, ZcApi, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl, MapCtrl, UnconCtrl) {
     'use strict';
 
+    // Preload schedule and uncon if no data in localStorage
+    (function() {
+        if (localStorage['zc-sync']) {
+            return;
+        }
+
+        var lambda = function() {};
+        ZcApi.getSchedule(lambda, lambda, lambda);
+        ZcApi.getUnconSchedule(lambda, lambda, lambda);
+    })();
+
+    // Init controllers
     var currentController;
     var controllers = {
         'stream'  : new StreamCtrl(),
@@ -18,9 +31,7 @@ define([
         'map'     : new MapCtrl(),
         'uncon'   : new UnconCtrl(),
 
-        'undef': function() {
-            console.log('No controller for this view');
-        }
+        'undef': function() {}
     };
 
     // Use the content-loader to load view and fire off post-load events
