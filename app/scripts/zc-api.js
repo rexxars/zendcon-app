@@ -7,7 +7,7 @@ define([
 ], function(_, $, pubsub, moment, speakingUrl) {
     'use strict';
 
-    var ttl = 120 // Minutes
+    var ttl = 0.001 // Minutes
       , ZC  = window.ZC;
 
     var getSlug = function(input) {
@@ -210,28 +210,29 @@ define([
         },
 
         retrieve: function(endpoint, onSuccess, onError, onResponse) {
-            console.log('Fetching ' + endpoint);
-            console.log('Fetch from cache? ', !(this.canSync() && this.mustSync(endpoint)));
+            // Fetch from local cache (always start here so we can deliver results right away)
+            var cacheData = this.getCached(endpoint);
+            if (cacheData) {
+                onSuccess(_.cloneDeep(cacheData));
+            }
 
-            if (this.canSync() && this.mustSync(endpoint)) {
+            if (!cacheData || (this.canSync() && this.mustSync(endpoint))) {
                 // Fetch from remote API
-                this.request(endpoint)
+                return this.request(endpoint)
                     .fail(onError)
-                    .always(onResponse || function() {})
+                    .always(onResponse)
                     .done(_.bind(function(data) {
                         data = this.filter(endpoint, data);
+
+                        // Don't re-update UI or repopulate the cache if no new data
+                        if (JSON.stringify(cacheData) === JSON.stringify(data)) {
+                            return;
+                        }
+
                         this.setCached(endpoint, data);
                         onSuccess(data);
                     }, this));
             } else {
-                // Fetch from local cache
-                var data = this.getCached(endpoint);
-                if (data) {
-                    onSuccess(data);
-                } else {
-                    onError(data);
-                }
-
                 onResponse();
             }
         }

@@ -10,6 +10,7 @@ define([
 ], function(pubsub, routes, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl, MapCtrl, UnconCtrl) {
     'use strict';
 
+    var currentController;
     var controllers = {
         'stream'  : new StreamCtrl(),
         'schedule': new ScheduleCtrl(),
@@ -24,6 +25,11 @@ define([
 
     // Use the content-loader to load view and fire off post-load events
     pubsub.subscribe('router:match', function(e, params) {
+        // Call unload method of previous controller if defined
+        if (currentController && currentController.onUnload) {
+            currentController.onUnload();
+        }
+
         var view       = params.view || params
           , controller = controllers[view]
           , handler    = controllers.undef;
@@ -36,6 +42,7 @@ define([
             handler = controller.render;
         }
 
+        currentController = controller;
         contentLoader.load(view, handler);
 
         document.body.className = 'section-' + (view || '');

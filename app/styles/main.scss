@@ -35,6 +35,11 @@ body.no-scroll {
     }
 }
 
+#content > .error {
+    padding: 2em;
+    color: red;
+}
+
 @media (max-width: $breakpoint) {
     body {
         overflow-y: auto;

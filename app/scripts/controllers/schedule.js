@@ -64,11 +64,21 @@ define([
         },
 
         onScheduleDataFail: function() {
-            console.log('Failed to fetch schedule data');
+            var error = '<p class="error">Terribly sorry, but it seems we failed to ' +
+                        'retrieve the schedule data... Are you connected to the internet? ' +
+                        'Try <a href="javascript:window.location.reload();">reloading</a>?';
+
+            $('#content').html(error);
         },
 
         onScheduleData: function() {
             this.fetching = false;
+        },
+
+        onUnload: function() {
+            if (this.xhr) {
+                this.xhr.abort();
+            }
         },
 
         setParams: function(params) {
@@ -81,7 +91,7 @@ define([
             }
 
             this.fetching = true;
-            ZcApi.getSchedule(
+            this.xhr = ZcApi.getSchedule(
                 this.onScheduleDataSuccess,
                 this.onScheduleDataFail,
                 this.onScheduleData
@@ -147,6 +157,7 @@ define([
             }
 
             // Add datepicker
+            $('#content > .date-picker').remove();
             this.datePicker = $(datepickerTemplate(this.getDatePickerParams())).insertBefore('.schedule');
             this.datePicker.find('a[data-date="' + viewParams.selectedDate + '"]').addClass('active');
 

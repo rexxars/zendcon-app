@@ -70,7 +70,7 @@ define([
             }
 
             this.fetching = true;
-            ZcApi.getUnconSchedule(
+            this.xhr = ZcApi.getUnconSchedule(
                 this.onScheduleDataSuccess,
                 this.onScheduleDataFail,
                 this.onScheduleData
