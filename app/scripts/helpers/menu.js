@@ -12,13 +12,13 @@ define(['jquery', 'pubsub'], function($, pubsub) {
 
     // Handle overflow menu
     var menuElements = $('#menu, #layout');
-    items.filter('.expand').on('click', function(e) {
+    $('.toggle-menu').on('click', function(e) {
         e.preventDefault();
         menuElements.toggleClass('active');
     });
 
     // Handle overflow menu item clicks
-    items.not('.expand').on('click', function() {
+    items.on('click', function() {
         menuElements.removeClass('active');
     });
 

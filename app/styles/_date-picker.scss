@@ -42,6 +42,10 @@
         opacity: 0.4;
         //box-shadow: 0 -2px 5px #000;
         transition: opacity 0.2s ease-in;
+
+        @media (max-width: $breakpoint) {
+            width: 70px;
+        }
     }
 
     .day {
@@ -72,5 +76,11 @@
     .date-picker {
         background-image: url(../images/tweed_@2x.png);
         background-size: 200px 200px;
+    }
+}
+
+@media print {
+    .date-picker {
+        display: none;
     }
 }

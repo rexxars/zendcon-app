@@ -37,6 +37,8 @@ define([
         }
 
         contentLoader.load(view, handler);
+
+        document.body.className = 'section-' + (view || '');
     });
 
     return controllers;

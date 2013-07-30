@@ -11,7 +11,9 @@ define(['jquery', 'underscore'], function($, _) {
         this.init();
 
         _.bindAll(this, [
-            'render'
+            'render',
+            'toggleZoom',
+            'onMapLoaded'
         ]);
     };
 
@@ -39,8 +41,8 @@ define(['jquery', 'underscore'], function($, _) {
             $('#map .zoom button').on('click', this.toggleZoom);
             floors.find('button').on('click', this.toggleFloor);
 
-            map.on(Modernizr.touch ? 'touchstart' : 'mousedown', this.dragStart);
             map.on(Modernizr.touch ? 'touchmove'  : 'mousemove', this.dragMove);
+            map.on(Modernizr.touch ? 'touchstart' : 'mousedown', this.dragStart);
             map.on(Modernizr.touch ? 'touchend'   : 'mouseup',   this.dragEnd);
             win.on(Modernizr.touch ? 'touchend'   : 'mouseup',   this.dragWinEnd);
         },
@@ -87,31 +89,13 @@ define(['jquery', 'underscore'], function($, _) {
             });
         },
 
-        onMapLoaded: function() {
+        onMapLoaded: function(e) {
             if (++loaded !== 2) {
                 return;
             }
 
-            var image = $(this)
-              , img   = image.width() ? image : image.siblings();
-
-            var centerPrct = {
-                'ground-floor': {
-                    left: 0.512,
-                    top: 0.581
-                },
-                'top-floor': {
-                    left: 0.3744,
-                    top: 0.5759
-                }
-            }, centerPixel = {
-                left: Math.floor((img.width()  * centerPrct[active].left) - (map.width() / 2)),
-                top:  Math.floor((img.height() * centerPrct[active].top)  - (map.height() / 2))
-            };
-
-            map
-                .prop('scrollLeft', centerPixel.left)
-                .prop('scrollTop',  centerPixel.top);
+            map.find('img').css('width', $('#layout').width());
+            this.centerMap(e.target || e);
         },
 
         setActiveFloor: function(floor) {
@@ -147,11 +131,36 @@ define(['jquery', 'underscore'], function($, _) {
             }
 
             var el    = $((e.target.nodeName !== 'BUTTON') ? e.target.parentNode : e.target)
-              , width = el.hasClass('plus') ? 'auto' : $(window).width();
+              , width = el.hasClass('plus') ? 'auto' : $('#layout').width();
 
             el.toggleClass('plus minus').find('i').toggleClass('icon-plus icon-minus');
 
-            map.find('img').css('width', width);
+            var img = map.find('img').css('width', width).get(0);
+
+            this.centerMap(img);
+        },
+
+        centerMap: function(el) {
+            var image = $(el)
+              , img   = image.width() ? image : image.siblings();
+
+            var centerPrct = {
+                'ground-floor': {
+                    left: 0.512,
+                    top: 0.581
+                },
+                'top-floor': {
+                    left: 0.4244,
+                    top: 0.5759
+                }
+            }, centerPixel = {
+                left: Math.floor((img.width()  * centerPrct[active].left) - (map.width() / 2)),
+                top:  Math.floor((img.height() * centerPrct[active].top)  - (map.height() / 2))
+            };
+
+            map
+                .prop('scrollLeft', centerPixel.left)
+                .prop('scrollTop',  centerPixel.top);
         }
     });
 

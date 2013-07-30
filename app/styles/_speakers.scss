@@ -10,6 +10,7 @@
 
     img {
         width: 64px;
+        height: 64px;
         border-radius: 3px;
         margin: 0.3em;
         float: left;
@@ -24,14 +25,12 @@
         color: #000;
         font-weight: bold;
         text-decoration: none;
-        //line-height: 1.5em;
         display: inline-block;
         margin-top: 5px;
     }
 
     .meta {
         font-size: 0.9em;
-        //line-height: 1.5em;
     }
 
     .company {
@@ -43,6 +42,9 @@
         clear: both;
         margin-left: 95px;
         padding: 0;
+
+        page-break-before: avoid;
+        page-break-after: auto;
 
         a {
             text-decoration: none;

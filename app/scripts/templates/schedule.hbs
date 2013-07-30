@@ -20,11 +20,11 @@
                     </span>
                 </div>
                 {{#if SessionAbstract}}
-                    <blockquote class="abstract">{{SessionAbstract}}</blockquote>
+                    <blockquote class="abstract">{{{nl2br SessionAbstract}}}</blockquote>
                 {{/if}}
             </td>
             <td class="attending">
-                <button data-session-id="{{SessionID}}">✔</button>
+                <button data-session-id="{{SessionID}}"></button>
             </td>
         </tr>
         {{/each}}

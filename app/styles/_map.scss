@@ -10,9 +10,12 @@
     }
 
     img {
-        width: 625px;
         display: block;
         margin: 0 auto;
+
+        @media print {
+            margin-top: -2em;
+        }
     }
 
     .floors, .zoom {
@@ -21,6 +24,10 @@
         right: 3px;
         z-index: 5;
         -webkit-transform: translateZ(0);
+
+        @media print {
+            display: none;
+        }
 
         button {
             opacity: 1;
@@ -56,5 +63,13 @@
 
     .hidden {
         display: none;
+    }
+}
+
+@media print {
+    body.section-map {
+        #layout {
+            max-width: auto;
+        }
     }
 }

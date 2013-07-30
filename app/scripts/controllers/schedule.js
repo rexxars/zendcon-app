@@ -161,7 +161,7 @@ define([
         setCheckedSessionStatus: function(el, attending, btn) {
             _.each(attending, function(sessionId) {
                 // Mark session as attending
-                btn = el.find('button[data-session-id="' + sessionId + '"]').addClass('checked');
+                btn = el.find('button[data-session-id="' + sessionId + '"]').addClass('checked').text('✔');
 
                 // Mark siblings within slot as unattendable
                 btn.closest('tr').siblings().addClass('not-attendable');
@@ -207,7 +207,7 @@ define([
             }
 
             // Mark this session as checked
-            el.toggleClass('checked');
+            el.toggleClass('checked').text(wasChecked ? '' : '✔');
         },
 
         onSessionInfoClick: function() {

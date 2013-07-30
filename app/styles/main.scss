@@ -3,6 +3,7 @@ $FontAwesomePath: '../bower_components/font-awesome/font';
 @import '../bower_components/font-awesome/scss/font-awesome';
 @import 'variables';
 @import 'loader';
+@import 'header';
 @import 'nav';
 @import 'speakers';
 @import 'date-picker';
@@ -11,22 +12,35 @@ $FontAwesomePath: '../bower_components/font-awesome/font';
 @import 'stream';
 @import 'credits';
 
-h1 {
-    background: #4c5969;
-    color: #fff;
-    text-align: center;
-    margin: 0;
-    padding: 0.3em;
-    font-size: 1em;
-
-    // Not sure we want to use this header
-    display: none;
-}
-
-#content {
-    padding-top: $navBarHeight;
+body {
+    overflow-y: scroll;
 }
 
 body.no-scroll {
     overflow: hidden;
+}
+
+#content {
+    padding-top: $navBarHeight - 1px;
+}
+
+#layout {
+    max-width: $breakpoint;
+    margin: 0 auto;
+
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7);
+
+    @media print {
+        box-shadow: none;
+    }
+}
+
+@media (max-width: $breakpoint) {
+    body {
+        overflow-y: auto;
+    }
+
+    #layout {
+        box-shadow: none;
+    }
 }

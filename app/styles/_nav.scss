@@ -3,7 +3,8 @@
 .no-touch {
     #nav a:hover {
         color: #fff;
-        transition: color 0.3s ease-in;
+        transition: all 0.1s ease-in;
+        background: lighten($navColor, 20%);
     }
 }
 
@@ -12,23 +13,19 @@
     top: 0;
     left: 0;
     right: 0;
-    width: 101%; /* <== WAT. iPhone does not fill the screen at 100%. With 101% however... */
+    width: 100%;
     z-index: 10;
     -webkit-transform: translateZ(0);
 
     ul {
-        margin: 0;
+        max-width: $breakpoint + 38px;
+        margin: 0 auto;
         padding: 0;
     }
 
     li {
         display: inline-block;
         text-align: center;
-        width: 29.5%;
-
-        &.overflow {
-            width: 11.5%;
-        }
     }
 
     a {
@@ -45,9 +42,6 @@
     }
 }
 
-/**
- * Responsive menu thingy
- */
 #layout, #menu {
     -webkit-transition: all 0.2s ease-out;
        -moz-transition: all 0.2s ease-out;
@@ -56,16 +50,11 @@
             transition: all 0.2s ease-out;
 }
 
-#layout {
-    padding-right: 150px;
-    right: 0;
-}
-
 #menu {
     margin-right: -150px;
     width: 150px;
     position: fixed;
-    top: $navBarHeight;
+    top: $navBarHeight - 1px;
     right: 150px;
     bottom: 0;
     z-index: 1000;
@@ -103,7 +92,15 @@
     }
 }
 
-@media (max-width: 870px) {
+header, #menu {
+    display: none;
+}
+
+@media (max-width: $breakpoint) {
+
+    #nav {
+        display: none;
+    }
 
     #layout {
         position: relative;
@@ -122,6 +119,17 @@
 
     #menu {
         right: 0;
+        display: block;
     }
 
+    header {
+        display: block;
+    }
+}
+
+// Print settings
+@media print {
+    header, #nav, #menu {
+        display: none;
+    }
 }
