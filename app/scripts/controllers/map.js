@@ -3,9 +3,8 @@ define(['jquery', 'underscore'], function($, _) {
     'use strict';
 
     var win    = $(window)
-      , active = localStorage['map-layer'] || 'ground-floor'
       , loaded = 0
-      , map, nav, floors, dragX, dragY, scrolling;
+      , map, nav, floors, dragX, dragY, scrolling, active;
 
     var MapCtrl = function() {
         this.init();
@@ -25,6 +24,7 @@ define(['jquery', 'underscore'], function($, _) {
         render: function() {
             loaded = 0;
 
+            active = localStorage['map-layer'] || 'ground-floor';
             map    = $('#map .wrapper');
             floors = $('#map .floors');
             nav    = $('#nav');
