@@ -22,6 +22,10 @@ body.no-scroll {
 
 #content {
     padding-top: $navBarHeight - 1px;
+
+    @media print {
+        padding-top: 0;
+    }
 }
 
 #layout {

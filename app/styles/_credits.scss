@@ -60,6 +60,18 @@
     .frontend {
         background: #444 url(../images/frontend-icon.png);
         text-indent: -5000em;
+        margin-top: 10px;
+
+        @media print {
+            text-indent: 0;
+        }
+    }
+
+    .tooling {
+        background: #e48632;
+        color: #453015;
+        font-size: 34px;
+        margin-top: 10px;
     }
 
     img {

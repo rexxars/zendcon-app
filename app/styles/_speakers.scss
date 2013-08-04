@@ -16,9 +16,12 @@
         float: left;
     }
 
-    .speaker {
+    > li {
         border-bottom: 1px solid #ddd;
         list-style-type: none;
+
+        page-break-inside: avoid;
+        break-inside: avoid;
     }
 
     .name {
@@ -36,6 +39,10 @@
     .company {
         color: #7a7b7c;
         display: block;
+
+        @media print {
+            color: darken(#7a7b7c, 10%);
+        }
     }
 
     .talks {
@@ -43,8 +50,8 @@
         margin-left: 95px;
         padding: 0;
 
-        page-break-before: avoid;
-        page-break-after: auto;
+        page-break-inside: avoid;
+        break-inside: avoid;
 
         a {
             text-decoration: none;

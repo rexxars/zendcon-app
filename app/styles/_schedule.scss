@@ -39,6 +39,11 @@
         tr {
             border-bottom: 1px solid #ddd;
         }
+
+        tr, tr * {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
     }
 
     .not-attendable {
@@ -71,6 +76,10 @@
         .speaker {
             color: #7a7b7c;
             font-size: 0.9em;
+
+            @media print {
+                color: darken(#7a7b7c, 10%);
+            }
         }
 
         .title {
@@ -105,6 +114,11 @@
     .abstract {
         display: none;
 
+        @media print {
+            display: block;
+        }
+
+        clear: both;
         text-align: justify;
         padding: 10px;
         margin: 5px;
@@ -133,6 +147,10 @@
         td {
             background: lighten($activeColor, 10%);
             color: #fff;
+
+            @media print {
+                color: #000;
+            }
         }
 
         .attending {
@@ -146,21 +164,22 @@
 
     .keynote, .singlesession {
         .title {
-            line-height: 60px;
+            line-height: 54px;
+            float: left;
 
-            @media (max-width: 330px) {
-                line-height: 40px;
+            @media print {
+                line-height: auto;
             }
         }
 
         img.speaker {
-            margin-bottom: 12px;
+            margin-bottom: 0;
         }
 
         .meta {
-            position: absolute;
-            left: 0;
-            bottom: 3px;
+            width: auto;
+            float: right;
+            margin-top: 32px;
 
             @media (max-width: 330px) {
                 position: static;
@@ -182,11 +201,11 @@
             border: 0;
             background: transparent url(../images/check.png);
             text-indent: -5000em;
-            font-size: 2em;
 
             @media print {
                 background: none;
                 text-indent: 0;
+                font-size: 2em;
             }
 
             &.positioned {
