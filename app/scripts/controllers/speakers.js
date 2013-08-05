@@ -66,6 +66,11 @@ define([
 
             // Replace content
             this.content = $('.speaker-list').html(html);
+
+            // Scroll to top
+            $('html, body').animate({
+                scrollTop: 0
+            });
         }
     });
 
