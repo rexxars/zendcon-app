@@ -56,6 +56,15 @@ $app->get('/schedule', function() use ($app, $feedClient) {
 });
 
 $app->get('/uncon', function() use ($app, $feedClient, $config) {
+    // Try to fetch from memcached
+    $cache = new Memcached();
+    $cache->addServers($config['memcached']);
+    $talks = $cache->get('getEventTalks::' . $config['joind.in']['unconEventId']);
+    if (!empty($talks)) {
+        return $app->json($talks);
+    }
+
+    // Fetch from API
     $joindIn  = JoindIn\Client::factory();
     $talks = $joindIn->getEventTalks(
         $config['joind.in']['unconEventId'],
@@ -70,6 +79,13 @@ $app->get('/uncon', function() use ($app, $feedClient, $config) {
     }
 
     $schedule = $feedClient->convertJoindInTalksToSchedule($talks);
+
+    // Store in memcached
+    $cache->set(
+        'getEventTalks::' . $config['joind.in']['unconEventId'],
+        $schedule,
+        900
+    );
 
     return $app->json($schedule);
 });
