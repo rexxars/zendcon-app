@@ -7,8 +7,8 @@ define([
 ], function(_, $, pubsub, moment, speakingUrl) {
     'use strict';
 
-    var ttl = 10 // Minutes
-      , ZC  = window.ZC;
+    var ttlFactor = 20
+      , ZC        = window.ZC;
 
     var getSlug = function(input) {
         if (input === 'undefined-undefined') {
@@ -165,6 +165,14 @@ define([
             return entries;
         },
 
+        getTTL: function() {
+            // @todo Remove hardcoded timestamp
+            var offset = Math.floor((1381161600000 - +(new Date())) / 1000 / 60 / 60 / 24);
+            offset = Math.max(1, offset);
+
+            return offset * ttlFactor;
+        },
+
         mustSync: function(endpoint) {
             var key    = this.getCacheKey(endpoint)
               , sync   = JSON.parse(localStorage['zc-sync'] || '{}')
@@ -172,7 +180,7 @@ define([
               , diff   = Math.abs(new Date() - new Date(synced));
 
             // Sync if diff > TTL minutes
-            return diff > (ttl * 60 * 1000);
+            return diff > (this.getTTL() * 60 * 1000);
         },
 
         // Checks if we're online and can sync
