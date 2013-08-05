@@ -168,9 +168,9 @@ define([
         getTTL: function() {
             // @todo Remove hardcoded timestamp
             var offset = Math.floor((1381161600000 - +(new Date())) / 1000 / 60 / 60 / 24);
-            offset = Math.max(1, offset);
+            offset = Math.max(0, offset);
 
-            return offset * ttlFactor;
+            return offset * ttlFactor || 10;
         },
 
         mustSync: function(endpoint) {
