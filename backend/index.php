@@ -2,11 +2,14 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Response;
+    Symfony\Component\HttpFoundation\Response,
+    Symfony\Component\HttpFoundation\JsonResponse;
 
-// @todo Move this outside the webroot
 $config = require 'config/config.php';
 $feedClient = new Zendcon\Client($config);
+
+$cache = new Memcached();
+$cache->addServers($config['memcached']);
 
 $app = new Silex\Application();
 $app['debug'] = true;
@@ -15,53 +18,40 @@ $app->get('/', function() use ($app) {
     return $app->json(array('app' => 'ZendCon App Backend'));
 });
 
-$app->get('/roles', function() use ($app, $feedClient) {
-    $roles = $feedClient->getRoles();
+$app->get('/schedule', function(Request $request) use ($app, $feedClient, $cache) {
+    $lastModified = new DateTime('@' . ($cache->get('zendconScheduleLastUpdated') ?: time()));
 
-    if (empty($roles)) {
-        return $app->json(array('error' => 'Invalid response'), 503);
+    $response = new JsonResponse();
+    $response->setLastModified($lastModified);
+    $response->setPublic();
+    if ($response->isNotModified($request)) {
+        return $response;
     }
 
-    return $app->json($roles);
-});
-
-$app->get('/speakers', function() use ($app, $feedClient) {
-    $speakers = $feedClient->getSpeakers();
-
-    if (empty($speakers)) {
-        return $app->json(array('error' => 'Invalid response'), 503);
-    }
-
-    return $app->json($speakers);
-});
-
-$app->get('/schedule', function() use ($app, $feedClient) {
     $schedule = $feedClient->getSchedule();
-
     if (empty($schedule)) {
         return $app->json(array('error' => 'Invalid response'), 503);
     }
 
-    return $app->json($schedule);
+    $response->setData($schedule);
+    return $response;
 });
 
-$app->get('/schedule', function() use ($app, $feedClient) {
-    $schedule = $feedClient->getSchedule();
+$app->get('/uncon', function(Request $request) use ($app, $feedClient, $config, $cache) {
+    $lastModified = new DateTime('@' . ($cache->get('joindInLastUpdated') ?: time()));
 
-    if (empty($schedule)) {
-        return $app->json(array('error' => 'Invalid response'), 503);
+    $response = new JsonResponse();
+    $response->setLastModified($lastModified);
+    $response->setPublic();
+    if ($response->isNotModified($request)) {
+        return $response;
     }
 
-    return $app->json($schedule);
-});
-
-$app->get('/uncon', function() use ($app, $feedClient, $config) {
     // Try to fetch from memcached
-    $cache = new Memcached();
-    $cache->addServers($config['memcached']);
     $talks = $cache->get('getEventTalks::' . $config['joind.in']['unconEventId']);
     if (!empty($talks)) {
-        return $app->json($talks);
+        $response->setData($talks);
+        return $response;
     }
 
     // Fetch from API
@@ -81,13 +71,15 @@ $app->get('/uncon', function() use ($app, $feedClient, $config) {
     $schedule = $feedClient->convertJoindInTalksToSchedule($talks);
 
     // Store in memcached
+    $cache->set('joindInLastUpdated', time());
     $cache->set(
         'getEventTalks::' . $config['joind.in']['unconEventId'],
         $schedule,
         900
     );
 
-    return $app->json($schedule);
+    $response->setData($schedule);
+    return $response;
 });
 
 // Enable JSONP-support
@@ -98,20 +90,6 @@ $app->after(function(Request $request, Response $response) {
 
     $normalized = preg_replace('/[^A-Za-z0-9_.]/i', '', $request->get('callback'));
     $response->setContent($normalized . '(' . $response->getContent() . ')');
-});
-
-// Set cache headers
-$app->after(function(Request $request, Response $response) {
-    if (!$response->isSuccessful()) {
-        return;
-    }
-
-    $cacheTime = floor(Zendcon\Client::DEFAULT_TTL / 2);
-    $expires = new DateTime('@' . (time() + $cacheTime));
-
-    $response->setExpires($expires);
-    $response->setMaxAge($cacheTime);
-    $response->setPublic();
 });
 
 $app->run();

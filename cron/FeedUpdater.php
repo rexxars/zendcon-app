@@ -13,12 +13,20 @@ $config['readFromCache'] = false;
 $feedClient = new Zendcon\Client($config);
 $feedClient->getSchedule();
 
+// Set up cache
+$cache = new Memcached();
+$cache->addServers($config['memcached']);
+
+// Get current value
+$joindInCacheKey = 'getEventTalks::' . $config['joind.in']['unconEventId'];
+$currentJoindIn  = $cache->get($joindInCacheKey);
+
 // Fetch Joind.in sessions
 $joindIn = JoindIn\Client::factory();
 $talks   = $joindIn->getEventTalks(
     $config['joind.in']['unconEventId'],
     array(
-        'verbose' => 'yes',
+        'verbose'        => 'yes',
         'resultsperpage' => 0,
     )
 );
@@ -27,10 +35,14 @@ $talks   = $joindIn->getEventTalks(
 if (!empty($talks)) {
     $schedule = $feedClient->convertJoindInTalksToSchedule($talks);
 
-    $cache  = new Memcached();
-    $cache->addServers($config['memcached']);
+    // Check if updated
+    if ($currentJoindIn != $schedule) {
+        // Hooray, set timestamp
+        $cache->set('joindInLastUpdated', time());
+    }
+
     $cache->set(
-        'getEventTalks::' . $config['joind.in']['unconEventId'],
+        $joindInCacheKey,
         $schedule,
         900
     );

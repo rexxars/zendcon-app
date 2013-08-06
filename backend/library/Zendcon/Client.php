@@ -172,6 +172,11 @@ class Client {
             return strcmp($aDate, $bDate);
         });
 
+        $current = $this->cache->get($cacheKey);
+        if ($schedule && $current != $schedule) {
+            $this->cache->set('zendconScheduleLastUpdated', time());
+        }
+
         if (!empty($schedule)) {
             $this->cache->set($cacheKey, $schedule, self::DEFAULT_TTL);
         }
