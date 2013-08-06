@@ -103,4 +103,16 @@
         font-size: 1.5em;
         font-weight: bold;
     }
+
+    .external {
+        p {
+            margin-left: 0;
+            text-align: center;
+            font-size: 0.8em;
+        }
+
+        a {
+            color: #000;
+        }
+    }
 }
