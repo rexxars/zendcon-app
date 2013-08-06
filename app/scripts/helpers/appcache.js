@@ -1,4 +1,4 @@
-define([], function() {
+define(['jquery'], function($) {
     'use strict';
 
     if (!window.applicationCache) {
@@ -24,6 +24,7 @@ define([], function() {
         }
     };
 
-    window.addEventListener('load', appCache.onLoad, false);
+    $(document).ready(appCache.onLoad);
+
     return appCache;
 });
