@@ -239,17 +239,19 @@ define([
 
             // Scroll to abstract if not presently in view
             if (!open) {
-                pos = abstract.offset();
-                viewport = {
-                    from: window.scrollY,
-                    to  : window.scrollY + window.innerHeight
-                };
+                _.delay(function() {
+                    pos = abstract.offset();
+                    viewport = {
+                        from: window.scrollY,
+                        to  : window.scrollY + window.innerHeight
+                    };
 
-                if (pos.top < viewport.from || (pos.top + abstract.height()) > viewport.to) {
-                    $('html, body').animate({
-                        scrollTop: pos.top - 150
-                    });
-                }
+                    if (pos.top < viewport.from || (pos.top + abstract.height()) > viewport.to) {
+                        $('html, body').animate({
+                            scrollTop: pos.top - 150
+                        });
+                    }
+                }, 100);
 
                 goTo = goTo.replace(/(\/|\/\d+)?$/, '/' + el.data('session-id'));
             } else {
