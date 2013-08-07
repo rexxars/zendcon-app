@@ -1,0 +1,5 @@
+<ul class="photo-list">
+    {{#each photos}}
+    <li><a href="{{f}}" data-user="{{u}}" data-caption="{{cap}}"><img src="{{t}}" onerror="ZC.nukeImg(this)"></a></li>
+    {{/each}}
+</ul>

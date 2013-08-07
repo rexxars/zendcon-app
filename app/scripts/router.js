@@ -34,6 +34,7 @@ define(['underscore', 'page', 'pubsub'], function(_, page, pubsub) {
     page('/stream', onMatch);
     page('/speakers', onMatch);
     page('/map', onMatch);
+    page('/photos', onMatch);
     page('/credits', onMatch);
 
     // Default to the following location

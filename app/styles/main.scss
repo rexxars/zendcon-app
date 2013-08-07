@@ -1,5 +1,6 @@
 $FontAwesomePath: '../bower_components/font-awesome/font';
 @import 'pure';
+@import '../bower_components/magnific-popup/src/css/main';
 @import '../bower_components/font-awesome/scss/font-awesome';
 @import 'variables';
 @import 'loader';
@@ -10,6 +11,7 @@ $FontAwesomePath: '../bower_components/font-awesome/font';
 @import 'schedule';
 @import 'map';
 @import 'stream';
+@import 'photos';
 @import 'credits';
 
 body {

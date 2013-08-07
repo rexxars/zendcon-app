@@ -1,0 +1,57 @@
+@import 'variables';
+
+.photos {
+    .photo-list {
+        margin: 0;
+        padding: 0;
+
+        a {
+            display: block;
+        }
+    }
+
+    li {
+        list-style-type: none;
+        display: inline-block;
+    }
+
+    img {
+        @media (min-width: $breakpoint) {
+            width: 116px;
+        }
+
+        @media (max-width: 360px) {
+            width: 117px;
+        }
+
+        @media (max-width: 320px) {
+            width: 103px;
+        }
+
+        @media (max-width: 300px) {
+            width: 100px;
+        }
+    }
+
+    .placeholder {
+
+        display: block;
+        text-decoration: none;
+        text-align: center;
+        color: #000;
+        font-size: 3em;
+        padding-top: 1em;
+        cursor: wait;
+
+        i {
+            display: block;
+            font-size: 3em;
+        }
+
+        .error {
+            display: block;
+            background: lighten(red, 20%);
+            color: #fff;
+        }
+    }
+}

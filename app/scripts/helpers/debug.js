@@ -8,7 +8,8 @@ define([], function() {
     };
 
     ZC.nukeImg = function(img) {
-        img.parentElement.removeChild(img);
+        var parent = img.parentElement;
+        parent.parentElement.removeChild(parent);
     };
 
     ZC.nuke = function() {

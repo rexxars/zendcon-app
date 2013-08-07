@@ -1,12 +1,13 @@
 define([
     'jquery',
+    'magnificentpopup',
     'helpers/debug',
     'router',
     'controllers/index',
     'helpers/appcache',
     'helpers/menu',
     'helpers/handlebars-helpers',
-], function($, ZC, router) {
+], function($, mp, ZC, router) {
     'use strict';
 
     // When document is loaded and ready to go, init the router
