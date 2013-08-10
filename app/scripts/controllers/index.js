@@ -8,8 +8,21 @@ define([
     'controllers/schedule',
     'controllers/map',
     'controllers/photo',
-    'controllers/uncon'
-], function(pubsub, routes, ZcApi, contentLoader, StreamCtrl, SpeakersCtrl, ScheduleCtrl, MapCtrl, PhotoCtrl, UnconCtrl) {
+    'controllers/uncon',
+    'controllers/credits'
+], function(
+    pubsub,
+    routes,
+    ZcApi,
+    contentLoader,
+    StreamCtrl,
+    SpeakersCtrl,
+    ScheduleCtrl,
+    MapCtrl,
+    PhotoCtrl,
+    UnconCtrl,
+    CreditsCtrl
+) {
     'use strict';
 
     // Preload schedule and uncon if no data in localStorage
@@ -32,6 +45,7 @@ define([
         'map'     : new MapCtrl(),
         'photos'  : new PhotoCtrl(),
         'uncon'   : new UnconCtrl(),
+        'credits' : new CreditsCtrl(),
 
         'undef': function() {}
     };

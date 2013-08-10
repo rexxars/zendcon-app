@@ -35,6 +35,8 @@ define(['underscore', 'jquery'], function(_, $) {
                     cap: item.caption ? (item.caption.text || '') : '',
                     d: parseInt(item.created_time, 10),
                     u: item.user.username,
+                    a: item.link,
+                    l: 0,
                     t: item.images.thumbnail.url,
                     f: item.images.standard_resolution.url
                 };
@@ -54,14 +56,18 @@ define(['underscore', 'jquery'], function(_, $) {
             cache[key] = val;
 
             localStorage.setItem(
-                'insta-' + this.config.tag,
+                this.getCacheKey(),
                 JSON.stringify(cache)
             );
         },
 
+        getCacheKey: function() {
+            return 'insta-' + this.config.tag;
+        },
+
         getCache: function() {
             try {
-                return JSON.parse(localStorage.getItem('insta-' + this.config.tag)) || {};
+                return JSON.parse(localStorage.getItem(this.getCacheKey())) || {};
             } catch (e) {
                 return {};
             }
@@ -103,7 +109,7 @@ define(['underscore', 'jquery'], function(_, $) {
         },
 
         mustSync: function() {
-            var key    = 'insta' + this.config.tag
+            var key    = this.getCacheKey()
               , sync   = JSON.parse(localStorage['zc-sync'] || '{}')
               , synced = sync[key] || 0
               , diff   = Math.abs(new Date() - new Date(synced));

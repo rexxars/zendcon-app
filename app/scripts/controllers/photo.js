@@ -2,25 +2,48 @@ define([
     'underscore',
     'jquery',
     'instagram',
+    'flickr',
     'hbs!templates/photo-list'
-], function(_, $, Instagram, photoListTemplate) {
+], function(_, $, Instagram, Flickr, photoListTemplate) {
     'use strict';
+
+    var licenses = [
+        'All Rights Reserved',
+        'Attribution-NonCommercial-ShareAlike License',
+        'Attribution-NonCommercial License',
+        'Attribution-NonCommercial-NoDerivs License',
+        'Attribution License',
+        'Attribution-ShareAlike License',
+        'Attribution-NoDerivs License',
+        'No known copyright restrictions'
+    ];
 
     var removeLoading = function() {
         $('.photo-loader').remove();
-    };
+    }, ttl = 10;
 
     var PhotoCtrl = function() {
         this.instagram = new Instagram({
             tag: 'zendcon',
             clientId: 'a9d882434fd14061bced3b3f6ab9d4fc',
-            ttl: 10
+            ttl: ttl
         });
 
+        this.flickr = new Flickr({
+            tag: 'zendcon',
+            apiKey: '58178ddb070f4d63bff71d9b74fe57b9',
+            ttl: ttl
+        });
+
+        this.onDataComplete = _.after(
+            2, // Flickr + instagram
+            this.onDataComplete
+        );
+
         _.bindAll(this, [
-            'onInstaDataSuccess',
-            'onInstaDataFail',
-            'onInstaData',
+            'onDataFetchSuccess',
+            'onDataFail',
+            'onDataComplete',
             'fetchData',
             'render'
         ]);
@@ -46,8 +69,9 @@ define([
 
             removeLoading();
 
-            $('.photos .placeholder')
-                .replaceWith(photoListTemplate(this.data));
+            var data = this.data.length > 1 ? this.mergeData() : this.data[0];
+            $('.photos .placeholder, .photos .photo-list')
+                .replaceWith(photoListTemplate({ photos: data }));
         },
 
         bindPhotoModal: function() {
@@ -60,7 +84,7 @@ define([
                 gallery: {
                     enabled: true,
                     navigateByImgClick: true,
-                    preload: [0, 1]
+                    preload: [2, 2]
                 },
                 zoom: {
                     enabled: true
@@ -68,18 +92,22 @@ define([
                 image: {
                     tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
                     titleSrc: function(item) {
-                        return item.el.attr('title');
+                        var markup = 'by <a href="' + item.el.data('user-link') + '" target="_blank">';
+                        markup += item.el.data('user') + '</a> ';
+                        markup += '(' + licenses[item.el.data('license')] + ')';
+                        markup += '<div class="description">' + item.el.data('caption') + '</div>';
+                        return markup;
                     }
                 }
             });
         },
 
-        onInstaDataSuccess: function(res) {
-            this.data = { photos: res };
+        onDataFetchSuccess: function(res) {
+            this.data.push(res);
             this.render();
         },
 
-        onInstaDataFail: function() {
+        onDataFail: function() {
             var error = '<p class="error">Terribly sorry, but it seems we failed to ' +
                         'retrieve the photo data... Are you connected to the internet? ' +
                         'Try <a href="javascript:window.location.reload();">reloading</a>?';
@@ -87,7 +115,7 @@ define([
             $('#content').html(error);
         },
 
-        onInstaData: function() {
+        onDataComplete: function() {
             this.fetching = false;
         },
 
@@ -97,11 +125,25 @@ define([
             }
 
             this.fetching = true;
-            this.xhr = this.instagram.getLatestPhotos(
-                this.onInstaDataSuccess,
-                this.onInstaDataFail,
-                this.onInstaData
+            this.data = [];
+            this.instagram.getLatestPhotos(
+                this.onDataFetchSuccess,
+                this.onDataFail,
+                this.onDataComplete
             );
+
+            this.flickr.getLatestPhotos(
+                this.onDataFetchSuccess,
+                this.onDataFail,
+                this.onDataComplete
+            );
+        },
+
+        mergeData: function() {
+            var merged   = this.data[0].concat(this.data[1])
+              , sorted   = _.sortBy(merged, 'd').reverse();
+
+            return sorted;
         }
     });
 

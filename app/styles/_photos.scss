@@ -1,5 +1,9 @@
 @import 'variables';
 
+.section-photos #content {
+    padding-top: 52px;
+}
+
 .photos {
     .photo-list {
         margin: 0;
@@ -52,6 +56,27 @@
             display: block;
             background: lighten(red, 20%);
             color: #fff;
+        }
+    }
+
+    footer {
+        text-align: center;
+        color: #333;
+        font-size: 0.8em;
+
+        padding: 1em 0;
+    }
+}
+
+.mfp-content {
+    .mfp-title {
+        a {
+            color: #68a6cf;
+        }
+
+        .description {
+            color: #bdbdbd;
+            font-size: 0.8em;
         }
     }
 }
