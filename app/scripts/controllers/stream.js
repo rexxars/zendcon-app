@@ -11,6 +11,12 @@ define(['underscore', 'jquery', 'pubsub'], function(_, $, pubsub) {
 
     _.extend(StreamCtrl.prototype, {
         init: function() {
+            _.bindAll(this, [
+                'onRouteMatch',
+                'renderOfflineMode',
+                'render'
+            ]);
+
             pubsub.subscribe('router:match', this.onRouteMatch);
         },
 
@@ -18,7 +24,20 @@ define(['underscore', 'jquery', 'pubsub'], function(_, $, pubsub) {
             $(document.body).toggleClass('no-scroll', route === 'stream');
         },
 
+        renderOfflineMode: function() {
+            removeLoading();
+            $('.stream .twitter-timeline').replaceWith(
+                '<div class="offline">' + 
+                '   You are offline<br>Twitter stream can\'t load :(' + 
+                '</div>'
+            );
+        },
+
         render: function() {
+            if (!navigator.onLine) {
+                return this.renderOfflineMode();
+            }
+
             // Window dimensions?
             var height = window.innerHeight - 47
               , width  = window.innerWidth;
