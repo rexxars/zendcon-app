@@ -1,0 +1,40 @@
+This app was created for the ZendCon App Content 2013
+by Espen Hovlandsdal (rexxars.com / espen@hovlandsdal.com)
+
+Hope you like it!
+
+Technologies used:
+
+Backend:
+    - PHP
+    - Silex
+    - Guzzle
+    - Memcached
+
+Javascript:
+    - RequireJS
+    - Page.js
+    - PubSubJS
+    - Moment.js
+    - Handlebars
+    - jQuery
+    - Magnific Popup
+
+Frontend:
+    - SASS + Compass
+    - Pure (CSS modules)
+    - Font Awesome
+    - Cache manifest
+    - HTML5
+
+Tooling:
+    - Grunt JS
+    - Bower
+    - Sublime Text
+
+Third-party:
+    - App icon made by Kristian Krogvold
+    - Tweed pattern made by Simon Leo (http://subtlepatterns.com/tweed/)
+
+    - This product uses the Instagram API but is not endorsed or certified by Instagram.
+    - This product uses the Flickr API but is not endorsed or certified by Flickr or Yahoo.
