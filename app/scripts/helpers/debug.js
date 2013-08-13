@@ -16,6 +16,10 @@ define(['helpers/basepath'], function(basepath) {
         for (var key in localStorage) {
             localStorage.removeItem(key);
         }
+
+        if (window.applicationCache) {
+            window.applicationCache.swapCache();
+        }
     };
 
     return ZC;
