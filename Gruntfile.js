@@ -237,7 +237,7 @@ module.exports = function (grunt) {
                         'bower_components/font-awesome/font/fontawesome-webfont.svg?v=' + fontAwesomeVersion
                     ],
                     fallback: [
-                        '/ /index.html',
+                        '/ index.html',
                         'images/speakers images/speakers/default.png'
                     ],
                     timestamp: true
