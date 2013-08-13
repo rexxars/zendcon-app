@@ -7,6 +7,6 @@ define([], function() {
             basePath = document.getElementsByTagName('base')[0].getAttribute('href');
         }
 
-        return path ? (basePath + path.replace(/^\//, '')) : basePath;
+        return path ? (basePath.replace(/^\//, '') + path) : basePath;
     };
 });
