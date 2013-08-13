@@ -1,10 +1,10 @@
-define([], function() {
+define(['helpers/basepath'], function(basepath) {
     'use strict';
 
     var ZC = window.ZC || {};
 
     ZC.defaultImg = function(img) {
-        img.src = '/images/speakers/default.png';
+        img.src = basepath('/images/speakers/default.png');
     };
 
     ZC.nukeImg = function(img) {
