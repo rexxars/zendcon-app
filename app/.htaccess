@@ -1,11 +1,14 @@
 AddType text/cache-manifest .appcache
-ExpiresByType text/cache-manifest "access plus 120 seconds"
+
+<IfModule mod_expires.c>
+    ExpiresByType text/cache-manifest "access plus 120 seconds"
+</IfModule>
 
 <IfModule mod_rewrite.c>
     Options -MultiViews
 
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_URI} !.*\.(css|gif|png|jpg|ico|js)
+    RewriteCond %{REQUEST_URI} !.*\.(css|gif|png|jpg|ico|js|appcache)
     RewriteRule ^ index.html [QSA,L]
 </IfModule>
