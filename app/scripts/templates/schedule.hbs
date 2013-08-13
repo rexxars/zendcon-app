@@ -5,7 +5,7 @@
         {{#each sessions}}
         <tr class="{{#if isKeynote}}keynote{{/if}} {{#if singleSession}}singlesession{{/if}}">
             <td class="article" data-session-id="{{EntryID}}">
-                <img onerror="ZC.defaultImg(this)" src="{{#if SpeakerImg}}{{SpeakerImg}}{{else}}/images/speakers/{{speakerSlug}}.png{{/if}}" class="speaker">
+                <img onerror="ZC.defaultImg(this)" src="{{#if SpeakerImg}}{{SpeakerImg}}{{else}}{{../../basePath}}/images/speakers/{{speakerSlug}}.png{{/if}}" class="speaker">
                 <span class="title">{{SessionTitle}}</span>
                 <span class="speaker">{{FirstName}} {{LastName}}</span>
                 <div class="meta">
@@ -15,7 +15,7 @@
 
                     <span class="markers">
                         {{#each tags}}
-                            <img src="/images/sessions/{{this}}.png" />
+                            <img src="{{../../basePath}}/images/sessions/{{this}}.png" />
                         {{/each}}
                     </span>
                 </div>

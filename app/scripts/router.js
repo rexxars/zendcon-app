@@ -1,4 +1,4 @@
-define(['underscore', 'page', 'pubsub'], function(_, page, pubsub) {
+define(['underscore', 'page', 'pubsub', 'helpers/basepath'], function(_, page, pubsub, basepath) {
     'use strict';
 
     // Save last route so we may default to the last viewed page
@@ -21,6 +21,12 @@ define(['underscore', 'page', 'pubsub'], function(_, page, pubsub) {
 
         pubsub.publish('router:match', params);
     };
+
+    // Define base URL
+    var basePath = basepath();
+    if (basePath !== '/') {
+        page.base(basePath);
+    }
 
     // Set up routes
     page('/schedule', onMatch);

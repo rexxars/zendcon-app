@@ -63,7 +63,10 @@ module.exports = function (grunt) {
                     middleware: function (connect) {
                         return [
                             modRewrite([
-                                '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif|appcache|txt)($|\\?) /index.html'
+                                '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif|appcache|txt)($|\\?) /index.html [L]'
+                            ]),
+                            modRewrite([
+                                '^/zendcon(.*)$ /$1'
                             ]),
                             mountFolder(connect, yeomanConfig.dist)
                         ];
@@ -269,6 +272,21 @@ module.exports = function (grunt) {
             all: {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
+        },
+        'regex-replace': {
+            dist: {
+                src: [
+                    'dist/**/*.js',
+                    'dist/**/*.html'
+                ],
+                actions: [{
+                    search: /(src|href|manifest|main)="\/([^\/])/g,
+                    replace: '$1="/zendcon/$2'
+                }, {
+                    search: /(src|href|manifest|main)="\/zendcon\/"/g,
+                    replace: '$1="/zendcon"'
+                }]
+            }
         }
     });
 
@@ -297,6 +315,7 @@ module.exports = function (grunt) {
         'copy:dist',
         'rev',
         'usemin',
+        'regex-replace',
         'manifest'
     ]);
 

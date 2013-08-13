@@ -1,4 +1,4 @@
-define(['jquery'], function($) {
+define(['jquery', 'helpers/basepath'], function($, basepath) {
     'use strict';
 
     var content
@@ -15,7 +15,7 @@ define(['jquery'], function($) {
                 return;
             }
 
-            content.load('/views/' + view + '.html', function(data, status, xhr) {
+            content.load(basepath('/views/' + view + '.html'), function(data, status, xhr) {
                 cache[view] = data;
                 onLoad(data, status, xhr);
             });

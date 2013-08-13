@@ -4,9 +4,10 @@ define([
     'zc-api',
     'moment',
     'page',
+    'helpers/basepath',
     'hbs!templates/schedule',
     'hbs!templates/datepicker'
-], function(_, $, ZcApi, moment, page, scheduleTemplate, datepickerTemplate, undefined) {
+], function(_, $, ZcApi, moment, page, basepath, scheduleTemplate, datepickerTemplate, undefined) {
     'use strict';
 
     var ScheduleCtrl = function() {
@@ -146,7 +147,7 @@ define([
             // Render each slot section
             this.slotView = $('.session-slot');
 
-            var params = {}, sessions, key, html = '';
+            var params = { basePath: basepath().replace(/\/$/, '') }, sessions, key, html = '';
             for (key in this.schedule) {
                 sessions = this.schedule[key];
 
