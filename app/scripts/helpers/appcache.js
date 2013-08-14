@@ -17,8 +17,14 @@ define([], function() {
 
             // Browser downloaded a new app cache
             // Swap it in and reload the page to get the new hotness
-            window.applicationCache.swapCache();
-            if (window.confirm('A new version of the app is available. Load it?')) {
+            try {
+                window.applicationCache.swapCache();
+
+                if (window.confirm('A new version of the app is available. Load it?')) {
+                    window.location.reload();
+                }
+            } catch (e) {
+                // If we fail to swap cache, try anyway.
                 window.location.reload();
             }
         }
