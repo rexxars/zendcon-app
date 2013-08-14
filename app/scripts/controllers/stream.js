@@ -27,8 +27,18 @@ define(['underscore', 'jquery', 'pubsub'], function(_, $, pubsub) {
         renderOfflineMode: function() {
             removeLoading();
             $('.stream .twitter-timeline').replaceWith(
-                '<div class="offline">' + 
-                '   You are offline<br>Twitter stream can\'t load :(' + 
+                '<div class="offline">' +
+                '   You are offline<br>Twitter stream can\'t load :(' +
+                '</div>'
+            );
+        },
+
+        renderTwitterFail: function() {
+            removeLoading();
+            $('.stream .twitter-timeline').replaceWith(
+                '<div class="offline">' +
+                '   Failed to fetch twitter widget<br>Twitter stream can\'t load :(<br>' +
+                '   <a href="javascript:window.location.reload();">Try reloading?</a>' +
                 '</div>'
             );
         },
@@ -40,7 +50,8 @@ define(['underscore', 'jquery', 'pubsub'], function(_, $, pubsub) {
 
             // Window dimensions?
             var height = window.innerHeight - 47
-              , width  = window.innerWidth;
+              , width  = window.innerWidth
+              , self   = this;
 
             (function(doc, tag, id) {
                 var a = doc.getElementsByClassName('twitter-timeline')[0]
@@ -59,6 +70,7 @@ define(['underscore', 'jquery', 'pubsub'], function(_, $, pubsub) {
                     js.id = id;
                     js.src = prot + '://platform.twitter.com/widgets.js';
                     js.onload = removeLoading;
+                    js.onerror = _.bind(function() { this.renderTwitterFail(); }, self);
                     fjs.parentNode.insertBefore(js, fjs);
                 }
             })(document, 'script', 'twitter-wjs');
