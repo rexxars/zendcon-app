@@ -139,6 +139,10 @@
 
     .singlesession {
         background: darken(#fff, 20%);
+
+        .article {
+            cursor: default;
+        }
     }
 
     .keynote {
