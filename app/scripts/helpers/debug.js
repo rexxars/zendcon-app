@@ -4,7 +4,7 @@ define(['helpers/basepath'], function(basepath) {
     var ZC = window.ZC || {};
 
     ZC.defaultImg = function(img) {
-        img.src = basepath('/images/speakers/default.png');
+        img.src = basepath('/images/speakers/default.jpg');
     };
 
     ZC.nukeImg = function(img) {
