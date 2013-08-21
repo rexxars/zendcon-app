@@ -238,7 +238,7 @@ module.exports = function (grunt) {
                     ],
                     fallback: [
                         '/ index.html',
-                        'images/speakers images/speakers/default.png'
+                        'images/speakers images/speakers/default.jpg'
                     ],
                     timestamp: true
                 },
