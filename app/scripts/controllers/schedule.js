@@ -47,6 +47,10 @@ define([
                     // See if this is the only session within the slot
                     _.each(slots[slotDate], function(session) {
                         session.singleSession = slot.length === 1;
+
+                        if (session.speakerSlug === 'blank') {
+                            session.SpeakerImg = basepath('/images/speakers/blank.png');
+                        }
                     });
                 });
             });
