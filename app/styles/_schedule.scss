@@ -161,18 +161,30 @@
             border-left-color: $activeColor;
         }
 
-        .meta {
+        .meta, .speaker {
             color: #fff;
         }
     }
 
     .keynote, .singlesession {
-        .title {
-            line-height: 54px;
-            float: left;
+        &.no-speaker {
+            .title {
+                line-height: 54px;
+                float: left;
 
-            @media print {
-                line-height: auto;
+                @media print {
+                    line-height: auto;
+                }
+            }
+
+            .meta {
+                width: auto;
+                float: right;
+                margin-top: 32px;
+
+                @media (max-width: 330px) {
+                    position: static;
+                }
             }
         }
 
@@ -180,14 +192,14 @@
             margin-bottom: 0;
         }
 
-        .meta {
-            width: auto;
-            float: right;
-            margin-top: 32px;
+        .markers {
+            display: none;
+        }
+    }
 
-            @media (max-width: 330px) {
-                position: static;
-            }
+    .keynote {
+        blockquote {
+            background: darken(#32739f, 10%);
         }
     }
 

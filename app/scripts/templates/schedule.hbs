@@ -3,7 +3,7 @@
 <table>
     <tbody>
         {{#each sessions}}
-        <tr class="{{#if isKeynote}}keynote{{/if}} {{#if singleSession}}singlesession{{/if}}">
+        <tr class="{{#if isKeynote}}keynote{{/if}}{{#if singleSession}} singlesession{{/if}}{{#unless FirstName}} no-speaker{{/unless}}">
             <td class="article" data-session-id="{{EntryID}}">
                 <img onerror="ZC.defaultImg(this)" src="{{#if SpeakerImg}}{{SpeakerImg}}{{else}}{{../../basePath}}/images/speakers/{{speakerSlug}}.jpg{{/if}}" class="speaker">
                 <span class="title">{{SessionTitle}}</span>
