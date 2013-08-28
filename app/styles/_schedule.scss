@@ -140,7 +140,7 @@
     .singlesession {
         background: darken(#fff, 20%);
 
-        .article {
+        &.no-speaker .article {
             cursor: default;
         }
     }
