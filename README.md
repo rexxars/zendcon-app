@@ -31,6 +31,7 @@ This app was made by Espen Hovlandsdal for the ZendCon '13 app contest.
 * Serve dist-folder as document root
 * Make sure .htaccess file is loaded
 * ``ln -s <repo-root>/backend <doc-root>/api``
+* Set up a cron to run ``php <repo-root/cron/FeedUpdater.php`` every 5 minutes
 * You should be good to go :-)
 
 # Features
