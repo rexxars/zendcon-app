@@ -6,6 +6,7 @@ var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
 var modRewrite = require('connect-modrewrite');
+var subFolder = false;
 
 module.exports = function (grunt) {
     // load all grunt tasks
@@ -61,15 +62,18 @@ module.exports = function (grunt) {
             dist: {
                 options: {
                     middleware: function (connect) {
-                        return [
+                        var middle = [
                             modRewrite([
                                 '!\\.(html|js|css|otf|eot|svg|ttf|woff|hbs|png|jpg|gif|appcache|txt)($|\\?) /index.html [L]'
                             ]),
-                            modRewrite([
-                                '^/zendcon(.*)$ /$1'
-                            ]),
                             mountFolder(connect, yeomanConfig.dist)
                         ];
+
+                        if (subFolder) {
+                            middle.push(modRewrite([
+                                '^/zendcon(.*)$ /$1'
+                            ]));
+                        }
                     }
                 }
             }
@@ -279,13 +283,13 @@ module.exports = function (grunt) {
                     'dist/**/*.js',
                     'dist/**/*.html'
                 ],
-                actions: [{
+                actions: subFolder ? [{
                     search: /(src|href|manifest|main)="\/([^\/])/g,
                     replace: '$1="/zendcon/$2'
                 }, {
                     search: /(src|href|manifest|main)="\/zendcon\/"/g,
                     replace: '$1="/zendcon"'
-                }]
+                }] : []
             }
         }
     });
