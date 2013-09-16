@@ -37,19 +37,31 @@ define([
             // First date in our schedule
             var firstDate;
 
-            // Divide schedule into dates
-            schedule = _.groupBy(schedule, 'Date');
+            // See if the schedule is empty
+            if (!schedule || !schedule.length) {
+                firstDate = '2013-10-07';
 
-            // Iterate over dates, organizing the sessions further
-            schedule = _.each(schedule, function(day, date, list) {
-                // Assign first date in schedule
-                if (!firstDate) {
-                    firstDate = date;
-                }
+                schedule = {
+                    '2013-10-07': [],
+                    '2013-10-08': [],
+                    '2013-10-09': [],
+                    '2013-10-10': []
+                };
+            } else {
+                // Divide schedule into dates
+                schedule = _.groupBy(schedule, 'Date');
 
-                // Assign sessions to slots (start - end time)
-                list[date] = _.groupBy(day, 'StartTime');
-            });
+                // Iterate over dates, organizing the sessions further
+                schedule = _.each(schedule, function(day, date, list) {
+                    // Assign first date in schedule
+                    if (!firstDate) {
+                        firstDate = date;
+                    }
+
+                    // Assign sessions to slots (start - end time)
+                    list[date] = _.groupBy(day, 'StartTime');
+                });
+            }
 
             if (!schedule[this.params.date]) {
                 var today = new Date().toISOString().substr(0, 10);
