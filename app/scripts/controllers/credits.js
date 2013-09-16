@@ -1,5 +1,6 @@
-define([], function() {
-    
+define(['jquery'], function($) {
+    'use strict';
+
     var CreditsCtrl = function() {};
 
     CreditsCtrl.prototype.render = function() {
@@ -7,8 +8,7 @@ define([], function() {
         $('html, body').animate({
             scrollTop: 0
         });
-    }; 
+    };
 
     return CreditsCtrl;
-
 });
