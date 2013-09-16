@@ -64,7 +64,7 @@ $app->get('/uncon', function(Request $request) use ($app, $feedClient, $config, 
         )
     );
 
-    if (empty($talks)) {
+    if (!is_array($talks)) {
         return $app->json(array('error' => 'Invalid response'), 503);
     }
 
