@@ -247,9 +247,11 @@
         }
     }
 
-    .old-data-note {
-        padding: 10px;
-        margin: 0;
-        background: lighten(#f00, 20%);
+    .empty {
+        .article {
+            font-size: 1.2em;
+            padding: 2em 0;
+            text-align: center;
+        }
     }
 }
