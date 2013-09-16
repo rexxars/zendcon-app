@@ -163,7 +163,7 @@ define([
             }
 
             // Do we need to render an 'empty'-message?
-            if (!this.schedule.length) {
+            if (!html.length) {
                 html += emptyScheduleTemplate({});
             }
 
