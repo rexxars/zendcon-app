@@ -6,8 +6,9 @@ define([
     'page',
     'helpers/basepath',
     'hbs!templates/schedule',
-    'hbs!templates/datepicker'
-], function(_, $, ZcApi, moment, page, basepath, scheduleTemplate, datepickerTemplate, undefined) {
+    'hbs!templates/datepicker',
+    'hbs!templates/empty-schedule'
+], function(_, $, ZcApi, moment, page, basepath, scheduleTemplate, datepickerTemplate, emptyScheduleTemplate, undefined) {
     'use strict';
 
     var ScheduleCtrl = function() {
@@ -159,6 +160,11 @@ define([
                 params.sessions = sessions;
 
                 html += scheduleTemplate(params);
+            }
+
+            // Do we need to render an 'empty'-message?
+            if (!this.schedule.length) {
+                html += emptyScheduleTemplate({});
             }
 
             // Add datepicker
