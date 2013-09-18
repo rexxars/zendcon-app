@@ -219,13 +219,6 @@ module.exports = function (grunt) {
                     src: [
                         'generated/*'
                     ]
-                }, {
-                    expand: true,
-                    dest: '<%= yeoman.dist %>',
-                    src: [
-                        'res/**',
-                        'config.xml'
-                    ]
                 }]
             }
         },
