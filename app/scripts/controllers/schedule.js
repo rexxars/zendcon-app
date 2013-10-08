@@ -133,6 +133,8 @@ define([
                 params.numDates++;
             }
 
+            params.colClass = params.numDates > 1 ? ('-' + params.numDates) : '';
+
             return params;
         },
 
