@@ -67,6 +67,10 @@ define([
                 return this.fetchData();
             }
 
+            if (this.data && this.lastFetched < (new Date() - 15000)) {
+                this.fetchData();
+            }
+
             removeLoading();
 
             var data = this.data.length > 1 ? this.mergeData() : this.data[0];
@@ -126,6 +130,7 @@ define([
 
             this.fetching = true;
             this.data = [];
+            this.lastFetched = new Date();
             this.instagram.getLatestPhotos(
                 this.onDataFetchSuccess,
                 this.onDataFail,

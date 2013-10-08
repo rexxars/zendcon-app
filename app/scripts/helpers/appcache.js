@@ -18,6 +18,9 @@ define([], function() {
             // Browser downloaded a new app cache
             // Swap it in and reload the page to get the new hotness
             try {
+                // Delete Flickr cache, as there was a bug where small images would be included
+                delete localStorage['flickr-zendcon'];
+
                 window.applicationCache.swapCache();
 
                 if (window.confirm('A new version of the app is available. Load it?')) {

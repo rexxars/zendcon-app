@@ -51,7 +51,8 @@ define(['underscore', 'jquery', 'instagram'], function(_, $, Instagram) {
 
             var existing = this.getCache().items || []
               , merged   = _.uniq(items.concat(existing), JSON.stringify)
-              , sorted   = _.sortBy(merged, 'd').reverse();
+              , filtered = _.filter(merged, function(item) { return item.f; })
+              , sorted   = _.sortBy(filtered, 'd').reverse();
 
             this.setCacheItem('items', sorted);
             return sorted;
