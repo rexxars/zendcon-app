@@ -73,6 +73,85 @@
             }
         }
 
+        .speaker-imgs-2, .speaker-imgs-3, .speaker-imgs-4 {
+            width: 48px;
+            height: 48px;
+            float: left;
+            width: 58px;
+
+            img {
+                position: absolute;
+            }
+        }
+
+        .speaker-imgs-2 {
+            img {
+                width: 36px;
+                height: 36px;
+                z-index: 2;
+                opacity: 0.9;
+            }
+
+            img:nth-child(2) {
+                top: 25px;
+                left: 18px;
+                z-index: 1;
+            }
+        }
+
+        .speaker-imgs-3, .speaker-imgs-4 {
+            img {
+                width: 36px;
+                height: 36px;
+            }
+
+            img:nth-child(1) {
+                top: 0;
+                left: -3px;
+                z-index: 3;
+            }
+
+            img:nth-child(2) {
+                top: 0;
+                left: 18px;
+                opacity: 0.9;
+                z-index: 2;
+            }
+
+            img:nth-child(3) {
+                top: 26px;
+                left: 9px;
+                opacity: 0.9;
+                z-index: 1;
+            }
+        }
+
+        .speaker-imgs-4 {
+            img {
+                width: 28px;
+                height: 28px;
+            }
+
+            img:nth-child(1) {
+                left: 0;
+            }
+
+            img:nth-child(2) {
+                top: 0;
+                left: 30px;
+            }
+
+            img:nth-child(3) {
+                top: 30px;
+                left: 0;
+            }
+
+            img:nth-child(4) {
+                top: 30px;
+                left: 30px;
+            }
+        }
+
         .speaker {
             color: #7a7b7c;
             font-size: 0.9em;
@@ -139,6 +218,10 @@
 
     .singlesession {
         background: darken(#fff, 20%);
+
+        .speaker {
+            color: lighten(#000, 20%);;
+        }
 
         &.no-speaker .article {
             cursor: default;

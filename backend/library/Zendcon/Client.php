@@ -13,7 +13,8 @@ namespace Zendcon;
 use Guzzle\Http\Client as GuzzleClient,
     Exception,
     Memcached,
-    DateTime;
+    DateTime,
+    DateInterval;
 
 class Client {
 
@@ -188,9 +189,6 @@ class Client {
         $schedule = array();
 
         foreach ($talks as $talk) {
-            // Let's push the ID up to prevent colliding with the ZendCon session IDs
-            $talk['id'] += 30000;
-
             // For what we can directly translate...
             $session = array(
                 'SessionID'       => $talk['id'],
@@ -199,10 +197,14 @@ class Client {
                 'SessionTitle'    => $talk['talk_title'],
             );
 
+            // Do we have a duration?
+            $duration = isset($talk['duration']) ? $talk['duration'] : 0;
+
             // Parse date
             $date = DateTime::createFromFormat(DateTime::W3C, $talk['start_date']);
             $session['Date'] = $date->format('Y-m-d');
             $session['StartTime'] = $date->format('H:i:s');
+            $session['EndTime'] = $date->add(new DateInterval('PT' . $duration . 'M'))->format('H:i:s');
 
             // Parse speaker names into firstname/lastname, get speaker image if present
             $speakerImg = null;
@@ -213,19 +215,12 @@ class Client {
                         $current = array();
                     }
 
-                    $image      = isset($speaker['speaker_img']) ? $speaker['speaker_img'] : null;
-                    $speakerImg = $speakerImg ?: $image;
-                    $current[]  = $speaker['speaker_name'];
+                    $current[] = array('Name' => $speaker['speaker_name']);
                     return $current;
                 }
             );
 
-            $speakers = implode(', ', $speakers);
-            $name     = explode(' ', $speakers, 2);
-            $session['FirstName']  = $name[0];
-            $session['LastName']   = isset($name[1]) ? $name[1] : '';
-            $session['SpeakerImg'] = $speakerImg;
-
+            $session['Speakers'] = $speakers;
             $schedule[] = $session;
         }
 

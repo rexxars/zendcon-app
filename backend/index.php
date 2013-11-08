@@ -5,8 +5,9 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpFoundation\Response,
     Symfony\Component\HttpFoundation\JsonResponse;
 
-$config = require 'config/config.php';
-$feedClient = new Zendcon\Client($config);
+$config      = require 'config/config.php';
+$roomNumbers = require 'config/zceu-room-numbers.php';
+$feedClient  = new Zendcon\Client($config);
 
 $cache = new Memcached();
 $cache->addServers($config['memcached']);
@@ -18,8 +19,8 @@ $app->get('/', function() use ($app) {
     return $app->json(array('app' => 'ZendCon App Backend'));
 });
 
-$app->get('/schedule', function(Request $request) use ($app, $feedClient, $cache) {
-    $lastModified = new DateTime('@' . ($cache->get('zendconScheduleLastUpdated') ?: time()));
+$app->get('/schedule', function(Request $request) use ($app, $feedClient, $config, $cache, $roomNumbers) {
+    $lastModified = new DateTime('@' . ($cache->get('zendconLastUpdated') ?: time()));
 
     $response = new JsonResponse();
     $response->setLastModified($lastModified);
@@ -28,17 +29,52 @@ $app->get('/schedule', function(Request $request) use ($app, $feedClient, $cache
         return $response;
     }
 
-    $schedule = $feedClient->getSchedule();
-    if (empty($schedule)) {
+    // Try to fetch from memcached
+    $talks = $cache->get('getEventTalks::' . $config['joind.in']['zendconEventId']);
+    if (!empty($talks) && false) {
+        $response->setData($talks);
+        return $response;
+    }
+
+    // Fetch from API
+    $joindIn  = JoindIn\Client::factory();
+    $talks = $joindIn->getEventTalks(
+        $config['joind.in']['zendconEventId'],
+        array(
+            'verbose' => 'yes',
+            'resultsperpage' => 0,
+        )
+    );
+
+    if (!is_array($talks)) {
         return $app->json(array('error' => 'Invalid response'), 503);
     }
+
+    $schedule = $feedClient->convertJoindInTalksToSchedule($talks);
+
+    // Map room numbers
+    foreach ($schedule as &$talk) {
+        $sessionId = $talk['SessionID'];
+
+        if (isset($roomNumbers[$sessionId])) {
+            $talk['Room'] = $roomNumbers[$sessionId];
+        }
+    }
+
+    // Store in memcached
+    $cache->set('zendconLastUpdated', time());
+    $cache->set(
+        'getEventTalks::' . $config['joind.in']['zendconEventId'],
+        $schedule,
+        900
+    );
 
     $response->setData($schedule);
     return $response;
 });
 
 $app->get('/uncon', function(Request $request) use ($app, $feedClient, $config, $cache) {
-    $lastModified = new DateTime('@' . ($cache->get('joindInLastUpdated') ?: time()));
+    $lastModified = new DateTime('@' . ($cache->get('unconLastUpdated') ?: time()));
 
     $response = new JsonResponse();
     $response->setLastModified($lastModified);
@@ -71,7 +107,7 @@ $app->get('/uncon', function(Request $request) use ($app, $feedClient, $config, 
     $schedule = $feedClient->convertJoindInTalksToSchedule($talks);
 
     // Store in memcached
-    $cache->set('joindInLastUpdated', time());
+    $cache->set('unconLastUpdated', time());
     $cache->set(
         'getEventTalks::' . $config['joind.in']['unconEventId'],
         $schedule,

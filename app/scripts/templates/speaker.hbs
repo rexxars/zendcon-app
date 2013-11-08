@@ -1,11 +1,7 @@
 <li>
-    <img onerror="ZC.defaultImg(this)" src="/images/speakers/{{speakerSlug}}.jpg" alt="{{FirstName}} {{LastName}}">
+    <img onerror="ZC.defaultImg(this)" src="/images/speakers/{{speakerSlug}}.jpg" alt="{{name}}">
 
-    <div class="name">{{FirstName}} {{LastName}}</div>
-    <p class="meta">
-        <span class="title">{{JobTitle}}</span>
-        <span class="company">{{Company}}</span>
-    </p>
+    <div class="name">{{name}}</div>
 
     <ul class="talks">
         {{#each talks}}

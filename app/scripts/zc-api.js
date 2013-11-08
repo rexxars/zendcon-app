@@ -44,11 +44,11 @@ define([
             tags.push('pro-php');
         }
 
-        if (_.contains(track, 'mobile')) {
+        if (_.contains(title, 'mobile')) {
             tags.push('mobile');
         }
 
-        if (_.contains(track, 'cloud')) {
+        if (_.contains(title + abstr, 'cloud')) {
             tags.push('cloud');
         }
 
@@ -72,9 +72,31 @@ define([
         },
 
         getSpeakers: function(onSuccess, onError, onResponse) {
+            var speakers = {}, talk, speaker;
             this.getSchedule(function(res) {
-                var speakers = _.groupBy(res, 'speakerSlug');
-                delete speakers.blank;
+                for (var i = 0; i < res.length; i++) {
+                    talk = res[i];
+
+                    for (var s = 0; s < talk.Speakers.length; s++) {
+                        speaker = talk.Speakers[s];
+
+                        if (!speakers[speaker.Slug]) {
+                            speakers[speaker.Slug] = {
+                                speakerSlug: speaker.Slug,
+                                name: speaker.Name,
+                                talks: []
+                            };
+                        }
+
+                        speakers[speaker.Slug].talks.push({
+                            'Date': talk.Date,
+                            'SessionID': talk.EntryID,
+                            'SessionTitle': talk.SessionTitle
+                        });
+                    }
+                }
+
+                delete speakers.tbd;
 
                 var sorted = _.sortBy(speakers, function(list, speakerSlug) {
                     return speakerSlug;
@@ -93,27 +115,40 @@ define([
         },
 
         getCheckedSessions: function() {
-            return JSON.parse(localStorage['zc-checked'] || '[]');
+            return JSON.parse(localStorage['zceu-checked'] || '[]');
         },
 
         addCheckedSession: function(id) {
             var checked = this.getCheckedSessions() || [];
             checked.push(parseInt(id, 10));
-            localStorage['zc-checked'] = JSON.stringify(checked);
+            localStorage['zceu-checked'] = JSON.stringify(checked);
             return checked;
         },
 
         removeCheckedSession: function(id) {
             var checked = this.getCheckedSessions() || [];
             checked = _.without(checked, parseInt(id, 10));
-            localStorage['zc-checked'] = JSON.stringify(checked);
+            localStorage['zceu-checked'] = JSON.stringify(checked);
             return checked;
         },
 
         scheduleFilter: function(entry) {
-            // Sorry about this, but I believe these have been tagged incorrectly
-            entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Ramsey' ? 'Ben'   : entry.FirstName;
-            entry.FirstName   = entry.FirstName === 'David' && entry.LastName === 'Shafik' ? 'Davey' : entry.FirstName;
+            entry.Speakers = _.chain(entry.Speakers)
+                .map(function(entry) {
+                    entry.Name = entry.Name.replace(/\|/g, '');
+                    entry.Slug = getSlug(entry.Name);
+                    return entry;
+                })
+                .filter(function(entry) {
+                    return entry.Name.indexOf('Presenter') === -1;
+                })
+                .value();
+
+            entry.SpeakerNames = _.map(entry.Speakers, function(speaker) {
+                return speaker.Name;
+            }).join(', ');
+
+            entry.NumSpeakers = entry.Speakers.length;
 
             // What do we do without a room? What's the big one called?
             entry.Room        = entry.Room || '';
@@ -125,10 +160,7 @@ define([
               , end   = moment(entry.Date + ' ' + entry.EndTime,   'YYYY-MM-DD HH:mm:ss');
 
             // Set slot time in localized time format
-            entry.slot        = start.format('LT') + ' - ' + end.format('LT');
-
-            // Generate slug for this speaker
-            entry.speakerSlug = getSlug(entry.FirstName + '-' + entry.LastName);
+            entry.slot        = start.format('HH:mm') + (entry.StartTime === entry.EndTime ? '' : (' - ' + end.format('HH:mm')));
 
             // Figure out which tags to use for this session
             entry.tags        = mapTags(entry);
@@ -139,27 +171,11 @@ define([
             return entry;
         },
 
-        unconFilter: function(entry) {
-            var start = moment(entry.Date + ' ' + entry.StartTime, 'YYYY-MM-DD HH:mm:ss');
-
-            // Set slot time in localized time format
-            entry.slot        = start.format('LT');
-
-            // Generate slug for this speaker
-            entry.speakerSlug = getSlug(entry.FirstName + '-' + entry.LastName);
-
-            // Figure out which tags to use for this session
-            entry.tags        = mapTags(entry);
-
-            return entry;
-        },
-
-
         filter: function(endpoint, entries) {
             if (endpoint === '/schedule') {
                 return _.map(entries, this.scheduleFilter);
             } else if (endpoint === '/uncon') {
-                return _.map(entries, this.unconFilter);
+                return _.map(entries, this.scheduleFilter);
             }
 
             return entries;
@@ -167,7 +183,7 @@ define([
 
         getTTL: function() {
             // @todo Remove hardcoded timestamp
-            var offset = Math.floor((1381161600000 - +(new Date())) / 1000 / 60 / 60 / 24);
+            var offset = Math.floor((1384758000000 - +(new Date())) / 1000 / 60 / 60 / 24);
             offset = Math.max(0, offset);
 
             return offset * ttlFactor || 10;
@@ -175,7 +191,7 @@ define([
 
         mustSync: function(endpoint) {
             var key    = this.getCacheKey(endpoint)
-              , sync   = JSON.parse(localStorage['zc-sync'] || '{}')
+              , sync   = JSON.parse(localStorage['zceu-sync'] || '{}')
               , synced = sync[key] || 0
               , diff   = Math.abs(new Date() - new Date(synced));
 
@@ -208,7 +224,7 @@ define([
 
         setCached: function(endpoint, data) {
             var key     = this.getCacheKey(endpoint)
-              , syncKey = 'zc-sync'
+              , syncKey = 'zceu-sync'
               , sync    = JSON.parse(localStorage[syncKey] || '{}');
 
             sync[key] = new Date().getTime();

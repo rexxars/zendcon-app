@@ -57,11 +57,9 @@ define([
             }
 
             // Populate templates
-            var speaker, speakerSlug, html = '';
+            var speakerSlug, html = '';
             for (speakerSlug in this.speakers) {
-                speaker = this.speakers[speakerSlug][0];
-                speaker.talks = this.speakers[speakerSlug];
-                html += speakerTemplate(speaker);
+                html += speakerTemplate(this.speakers[speakerSlug]);
             }
 
             // Replace content

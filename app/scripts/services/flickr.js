@@ -37,9 +37,13 @@ define(['underscore', 'jquery', 'instagram'], function(_, $, Instagram) {
                 return [];
             }
 
-            var items = _.map(res.photos.photo, function(item) {
+            var cap, items = _.map(res.photos.photo, function(item) {
+                cap = item.description._content ? item.description._content : (item.title || '');
+
+                // Flickr is returning some really strange binary data. Only show text.
+                cap = cap.match(/[^a-z]/ig).length > 25 ? '' : cap;
                 return {
-                    cap: item.description._content ? item.description._content : (item.title || ''),
+                    cap: cap,
                     d: parseInt(item.dateupload, 10),
                     u: item.ownername || item.owner,
                     a: '//flickr.com/' + item.owner,

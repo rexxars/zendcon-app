@@ -86,6 +86,9 @@
         .description {
             color: #bdbdbd;
             font-size: 0.8em;
+            word-break: break-word;
+            max-height: 100px;
+            overflow: hidden;
         }
     }
 }
