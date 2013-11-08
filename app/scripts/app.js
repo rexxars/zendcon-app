@@ -6,7 +6,7 @@ define([
     'controllers/index',
     'helpers/appcache',
     'helpers/menu',
-    'helpers/handlebars-helpers',
+    'helpers/handlebars-helpers'
 ], function($, mp, ZC, router) {
     'use strict';
 

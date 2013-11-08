@@ -235,31 +235,31 @@ define([
         },
 
         onSessionInfoClick: function() {
-            var el       = $(this)
-              , abstract = el.find('.abstract')
-              , open     = abstract.hasClass('open')
-              , btn      = el.siblings().find('button')
-              , pos      = open ? { top: '', left: '' } : btn.position()
-              , goTo     = window.location.pathname
+            var el        = $(this)
+              , sabstract = el.find('.abstract')
+              , open      = sabstract.hasClass('open')
+              , btn       = el.siblings().find('button')
+              , pos       = open ? { top: '', left: '' } : btn.position()
+              , goTo      = window.location.pathname
               , viewport;
 
-            if (!abstract.length) {
+            if (!sabstract.length) {
                 return;
             }
 
             btn.css(pos).toggleClass('positioned', !open);
-            abstract.toggleClass('open', !open);
+            sabstract.toggleClass('open', !open);
 
             // Scroll to abstract if not presently in view
             if (!open) {
                 _.delay(function() {
-                    pos = abstract.offset();
+                    pos = sabstract.offset();
                     viewport = {
                         from: window.scrollY,
                         to  : window.scrollY + window.innerHeight
                     };
 
-                    if (pos.top < viewport.from || (pos.top + abstract.height()) > viewport.to) {
+                    if (pos.top < viewport.from || (pos.top + sabstract.height()) > viewport.to) {
                         $('html, body').animate({
                             scrollTop: pos.top - 150
                         });

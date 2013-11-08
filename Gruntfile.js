@@ -98,12 +98,15 @@ module.exports = function (grunt) {
         },
         jshint: {
             options: {
-                jshintrc: '.jshintrc'
+                jshintrc: '.jshintrc',
+                ignores: [
+                    'app/scripts/libs/*.js',
+                    'app/scripts/modernizr/*.js'
+                ]
             },
-            all: [
+            files: [
                 'Gruntfile.js',
-                '<%= yeoman.app %>/scripts/{,*/}*.js',
-                '!<%= yeoman.app %>/scripts/vendor/*'
+                'app/scripts/{,*/}*.js'
             ]
         },
         compass: {
