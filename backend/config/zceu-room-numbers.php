@@ -36,6 +36,7 @@ return array(
     9922  => 'Pont des Arts AB',
     9266  => 'Seine AB',
     9921  => 'Auditorium',
+    9267  => 'Seine AB',
 
     // Wednesday
     9915  => 'Seine AB',
@@ -43,6 +44,8 @@ return array(
     9922  => 'Pont des Arts AB',
     9271  => 'Seine AB',
     9923  => 'Seince C',
+    9924  => 'Pont Des Arts AB',
+    10045 => 'Auditorium',
 
     9268  => 'Pont des Arts AB',
     9273  => 'Seine AB',
@@ -52,6 +55,7 @@ return array(
     9925  => 'Pont des Arts AB',
     9270  => 'Seine AB',
     9274  => 'Seine C',
+    10040 => 'Auditorium',
 
     9269  => 'Pont des Arts AB',
     9275  => 'Seine AB',
@@ -60,6 +64,7 @@ return array(
 
     9277  => 'Pont des Arts AB',
     9278  => 'Seine C',
+    10046 => 'Auditorium',
 
     9916  => 'Seine AB',
 );
