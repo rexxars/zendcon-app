@@ -200,6 +200,11 @@ class Client {
             // Do we have a duration?
             $duration = isset($talk['duration']) ? $talk['duration'] : 0;
 
+            // How about a room?
+            $room = empty($talk['tracks']) ? null : $talk['tracks'][0];
+            $room = $room ? $room['track_name'] : null;
+            $session['Room'] = $room;
+
             // Parse date
             $date = DateTime::createFromFormat(DateTime::W3C, $talk['start_date']);
             $session['Date'] = $date->format('Y-m-d');

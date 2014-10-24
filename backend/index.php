@@ -56,8 +56,10 @@ $app->get('/schedule', function(Request $request) use ($app, $feedClient, $confi
     foreach ($schedule as &$talk) {
         $sessionId = $talk['SessionID'];
 
-        if (isset($roomNumbers[$sessionId])) {
-            $talk['Room'] = $roomNumbers[$sessionId];
+        preg_match('#(Room|Hall) (\d+|A|B)$#', $talk['SessionAbstract'], $matches);
+
+        if (!isset($talk['Room']) && !empty($matches)) {
+            $talk['Room'] = $matches[0];
         }
     }
 
