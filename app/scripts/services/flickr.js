@@ -20,7 +20,7 @@ define(['underscore', 'jquery', 'instagram'], function(_, $, Instagram) {
 
     _.extend(Flickr.prototype, {
 
-        baseUrl: 'http://api.flickr.com/services/rest/',
+        baseUrl: 'https://api.flickr.com/services/rest/',
 
         request: function(endpoint) {
             return this.httpClient(
@@ -41,7 +41,7 @@ define(['underscore', 'jquery', 'instagram'], function(_, $, Instagram) {
                 cap = item.description._content ? item.description._content : (item.title || '');
 
                 // Flickr is returning some really strange binary data. Only show text.
-                cap = cap.match(/[^a-z]/ig).length > 25 ? '' : cap;
+                cap = (cap.match(/[^a-z]/ig) || '').length > 25 ? '' : cap;
                 return {
                     cap: cap,
                     d: parseInt(item.dateupload, 10),

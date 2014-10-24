@@ -110,7 +110,7 @@ define(['underscore', 'jquery'], function(_, $) {
 
         mustSync: function() {
             var key    = this.getCacheKey()
-              , sync   = JSON.parse(localStorage['zceu-sync'] || '{}')
+              , sync   = JSON.parse(localStorage['zc-sync'] || '{}')
               , synced = sync[key] || 0
               , diff   = Math.abs(new Date() - new Date(synced));
 

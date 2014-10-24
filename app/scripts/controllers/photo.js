@@ -24,13 +24,13 @@ define([
 
     var PhotoCtrl = function() {
         this.instagram = new Instagram({
-            tag: 'zceu',
+            tag: 'zendcon',
             clientId: 'a9d882434fd14061bced3b3f6ab9d4fc',
             ttl: ttl
         });
 
         this.flickr = new Flickr({
-            tag: 'zceu',
+            tag: 'zendcon',
             apiKey: '58178ddb070f4d63bff71d9b74fe57b9',
             ttl: ttl
         });

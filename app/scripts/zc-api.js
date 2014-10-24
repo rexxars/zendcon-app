@@ -115,20 +115,20 @@ define([
         },
 
         getCheckedSessions: function() {
-            return JSON.parse(localStorage['zceu-checked'] || '[]');
+            return JSON.parse(localStorage['zc-checked'] || '[]');
         },
 
         addCheckedSession: function(id) {
             var checked = this.getCheckedSessions() || [];
             checked.push(parseInt(id, 10));
-            localStorage['zceu-checked'] = JSON.stringify(checked);
+            localStorage['zc-checked'] = JSON.stringify(checked);
             return checked;
         },
 
         removeCheckedSession: function(id) {
             var checked = this.getCheckedSessions() || [];
             checked = _.without(checked, parseInt(id, 10));
-            localStorage['zceu-checked'] = JSON.stringify(checked);
+            localStorage['zc-checked'] = JSON.stringify(checked);
             return checked;
         },
 
@@ -183,7 +183,7 @@ define([
 
         getTTL: function() {
             // @todo Remove hardcoded timestamp
-            var offset = Math.floor((1384758000000 - +(new Date())) / 1000 / 60 / 60 / 24);
+            var offset = Math.floor((1414393200789 - +(new Date())) / 1000 / 60 / 60 / 24);
             offset = Math.max(0, offset);
 
             return offset * ttlFactor || 10;
@@ -191,7 +191,7 @@ define([
 
         mustSync: function(endpoint) {
             var key    = this.getCacheKey(endpoint)
-              , sync   = JSON.parse(localStorage['zceu-sync'] || '{}')
+              , sync   = JSON.parse(localStorage['zc-sync'] || '{}')
               , synced = sync[key] || 0
               , diff   = Math.abs(new Date() - new Date(synced));
 
@@ -224,7 +224,7 @@ define([
 
         setCached: function(endpoint, data) {
             var key     = this.getCacheKey(endpoint)
-              , syncKey = 'zceu-sync'
+              , syncKey = 'zc-sync'
               , sync    = JSON.parse(localStorage[syncKey] || '{}');
 
             sync[key] = new Date().getTime();
