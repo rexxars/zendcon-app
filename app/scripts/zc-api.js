@@ -135,12 +135,13 @@ define([
         scheduleFilter: function(entry) {
             entry.Speakers = _.chain(entry.Speakers)
                 .map(function(entry) {
+                    entry.Name = entry.Name.replace(/\s+-\s+.*/, '');
                     entry.Name = entry.Name.replace(/\|/g, '');
                     entry.Slug = getSlug(entry.Name);
                     return entry;
                 })
                 .filter(function(entry) {
-                    return entry.Name.indexOf('Presenter') === -1;
+                    return entry.Name.indexOf('Hall ') !== 0;
                 })
                 .value();
 
