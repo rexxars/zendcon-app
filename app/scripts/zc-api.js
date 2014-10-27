@@ -126,13 +126,19 @@ define([
             if (typeof console !== 'undefined') {
                 console.log('Adding session', localStorage['zc-checked']);
             }
+
             return checked;
         },
 
         removeCheckedSession: function(id) {
             var checked = this.getCheckedSessions() || [];
             checked = _.without(checked, parseInt(id, 10));
-            localStorage['zc-checked'] = JSON.stringify(checked);
+            localStorage.setItem('zc-checked', JSON.stringify(checked));
+
+            if (typeof console !== 'undefined') {
+                console.log('Removing session', localStorage['zc-checked']);
+            }
+
             return checked;
         },
 
@@ -235,6 +241,10 @@ define([
             sync[key] = new Date().getTime();
             localStorage[syncKey] = JSON.stringify(sync);
             localStorage[key]     = JSON.stringify(data);
+
+            if (typeof console !== 'undefined') {
+                console.log('Set cached endpoint ' + endpoint, localStorage[key]);
+            }
         },
 
         retrieve: function(endpoint, onSuccess, onError, onResponse) {
@@ -257,7 +267,7 @@ define([
                             return;
                         }
 
-                        //this.setCached(endpoint, data);
+                        this.setCached(endpoint, data);
                         onSuccess(data);
                     }, this));
             } else {
