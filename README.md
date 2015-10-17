@@ -1,6 +1,8 @@
-# ZendCon '13 App
+# ZendCon '15 App
 
-This app was made by Espen Hovlandsdal for the ZendCon '13 app contest.
+This app was made by Espen Hovlandsdal for the ZendCon '13 app contest and has since been used for ZendCon Europe 2013, ZendCon 2014 and now ZendCon 2015.
+
+Note that this app has not been significantly changed since 2013 and as such the technologies and methods used might be a bit outdated.
 
 # Dependencies
 
