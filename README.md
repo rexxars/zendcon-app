@@ -30,8 +30,8 @@ Note that this app has not been significantly changed since 2013 and as such the
 * ``bower install``
 * ``composer install``
 * ``grunt build``
-* Serve dist-folder as document root
-* Make sure .htaccess file is loaded
+* Serve the `dist`-folder as document root
+* Make sure the `.htaccess` file is loaded
 * ``ln -s <repo-root>/backend <doc-root>/api``
 * Set up a cron to run ``php <repo-root/cron/FeedUpdater.php`` every 5 minutes
 * You should be good to go :-)
@@ -39,10 +39,10 @@ Note that this app has not been significantly changed since 2013 and as such the
 # Features
 
 * Mark sessions to attend to make your own personal schedule 
-* Fetches ZendCon schedule from ZendCon API
-* Fetches uncon schedule from Joind.in API
+* Fetches ZendCon schedule from Joind.in API
+* Fetches uncon schedule from Joind.in API [disabled in 2015]
 * Shows a list of speakers and their talks
-* Shows a map of the venue (Santa Clara Convention Center)
+* Shows a map of the venue [disabled in 2015]
 * Twitter stream of related updates
 * Photo stream fetches related photos from Instagram and Flickr
 * PushState for clean urls without page reloads
