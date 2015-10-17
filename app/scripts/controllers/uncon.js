@@ -39,12 +39,12 @@ define([
 
             // See if the schedule is empty
             if (!schedule || !schedule.length) {
-                firstDate = '2014-10-27';
+                firstDate = '2015-10-20';
 
                 schedule = {
-                    '2014-10-27': [],
-                    '2014-10-28': [],
-                    '2014-10-29': []
+                    '2014-10-20': [],
+                    '2014-10-21': [],
+                    '2014-10-22': []
                 };
             } else {
                 // Divide schedule into dates
